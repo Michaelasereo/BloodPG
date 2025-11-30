@@ -7,15 +7,15 @@ This guide will help you set up Supabase for the BloodPG application.
 Create a `.env.local` file in the root of your project with the following content:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://vwdcjxmolvxlrfgcwpyf.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3ZGNqeG1vbHZ4bHJmZ2N3cHlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0NTQ0NTYsImV4cCI6MjA4MDAzMDQ1Nn0.j34QipJLjSDNHVSymkX61JJvllbXAn4LvtkUxqgVWTU
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 ```
 
 **Important:** The `.env.local` file is already in `.gitignore`, so it won't be committed to version control.
 
 ## Step 2: Set Up Database Schema
 
-1. Go to your Supabase project dashboard: https://supabase.com/dashboard/project/vwdcjxmolvxlrfgcwpyf
+1. Go to your Supabase project dashboard: https://supabase.com/dashboard
 2. Navigate to the **SQL Editor** in the left sidebar
 3. Click **New Query**
 4. Copy and paste the contents of `supabase/schema.sql` into the editor

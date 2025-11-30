@@ -4,32 +4,28 @@ This guide will help you configure Google OAuth with Supabase for your BloodPG a
 
 ## ✅ Prerequisites
 
-You've already set up your Google OAuth credentials:
-- **Client ID:** `578605290850-4rdu9sntqsvsv44keg80husvdvf73ncq.apps.googleusercontent.com`
-- **Client Secret:** `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`
-- **Project ID:** `bloodpg`
+You need to set up your Google OAuth credentials in Google Cloud Console:
+- **Client ID:** Your Google OAuth Client ID
+- **Client Secret:** Your Google OAuth Client Secret (keep this secure!)
+- **Project ID:** Your Google Cloud Project ID
 
 ## Step 1: Configure Google OAuth in Supabase Dashboard
 
 1. **Go to your Supabase Dashboard**
-   - Navigate to: https://supabase.com/dashboard/project/vwdcjxmolvxlrfgcwpyf/auth/providers
+   - Navigate to: https://supabase.com/dashboard
+   - Select your project
+   - Go to Authentication → Providers
 
 2. **Enable Google Provider**
    - Scroll down to find **Google** in the providers list
    - Toggle the **Enable Google provider** switch to ON
 
 3. **Add Google OAuth Credentials**
-   - **Client ID (for OAuth):** 
-     ```
-     578605290850-4rdu9sntqsvsv44keg80husvdvf73ncq.apps.googleusercontent.com
-     ```
-   - **Client Secret (for OAuth):** 
-     ```
-     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
-     ```
+   - **Client ID (for OAuth):** Your Google OAuth Client ID from Google Cloud Console
+   - **Client Secret (for OAuth):** Your Google OAuth Client Secret (keep this secure!)
    - **Authorized redirect URIs:** These are already configured in Google Console:
      - `http://localhost:3000/auth/callback` (for local development)
-     - `https://vwdcjxmolvxlrfgcwpyf.supabase.co/auth/v1/callback` (for Supabase OAuth)
+     - `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback` (for Supabase OAuth)
 
 4. **Save the Configuration**
    - Click **Save** at the bottom of the Google provider settings
@@ -43,13 +39,13 @@ Your Google OAuth credentials should have these redirect URIs configured:
 2. Select your OAuth 2.0 Client ID
 3. Verify these **Authorized redirect URIs** are present:
    - `http://localhost:3000/auth/callback`
-   - `https://vwdcjxmolvxlrfgcwpyf.supabase.co/auth/v1/callback`
+   - `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`
    - `https://Bloodpg.com/auth/callback` (for production)
 
 4. Verify these **Authorized JavaScript origins**:
    - `http://localhost:3000`
    - `https://Bloodpg.com`
-   - `https://vwdcjxmolvxlrfgcwpyf.supabase.co`
+   - `https://YOUR_PROJECT_REF.supabase.co`
 
 ## Step 3: Test the Authentication
 
@@ -122,7 +118,7 @@ User → /login → Google OAuth → Supabase Callback → /auth/callback → Ap
 ### Redirect URI mismatch error
 - ✅ Verify redirect URIs match exactly between Google Console and Supabase
 - ✅ Check that `http://localhost:3000/auth/callback` is configured
-- ✅ Verify Supabase callback URL is correct: `https://vwdcjxmolvxlrfgcwpyf.supabase.co/auth/v1/callback`
+- ✅ Verify Supabase callback URL is correct: `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`
 
 ### Authentication not persisting
 - ✅ Check browser console for errors
