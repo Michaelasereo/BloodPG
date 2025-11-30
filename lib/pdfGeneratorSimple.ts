@@ -348,7 +348,7 @@ export async function generateBloodPressurePDF({
     const fileName = `BloodPG_Report_${fromDateStr.replace(/[\s,]/g, '_')}_to_${toDateStr.replace(/[\s,]/g, '_')}.pdf`;
 
     const opt = {
-      margin: [0, 0, 0, 0],
+      margin: [0, 0, 0, 0] as [number, number, number, number],
       filename: fileName,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
@@ -369,7 +369,7 @@ export async function generateBloodPressurePDF({
     };
 
     await html2pdf()
-      .set(opt)
+      .set(opt as any)
       .from(container)
       .save();
 

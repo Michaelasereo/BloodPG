@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import AdminStatsCards from './AdminStatsCards';
-import AdminUsersTable from './AdminUsersTable';
+import AdminStatsCards from '@/components/AdminMainContent/AdminStatsCards';
+import AdminUsersTable from '@/components/AdminMainContent/AdminUsersTable';
 import DateRange from '@/components/MainContent/DateRange';
 import { getAllUsers, getAdminStats, type AdminUser, type AdminStats } from '@/lib/adminService';
 
@@ -101,19 +101,25 @@ export default function AdminDashboard() {
           </div>
 
           {/* Stats Cards */}
-          {stats && (
-            <AdminStatsCards
-              totalUsers={stats.totalUsers}
-              totalRecords={stats.totalRecords}
-              averageBloodPressure={stats.averageBloodPressure}
-            />
-          )}
+          <AdminStatsCards
+            stats={stats || { totalUsers: 0, totalRecords: 0, averageSystolic: 0, averageDiastolic: 0 }}
+            loading={loading}
+          />
 
           {/* Users Table */}
           <div className="absolute h-[181px] left-[83px] top-[407px] w-[722px]">
             <AdminUsersTable
               users={users}
-              onDeleteUser={handleDeleteUser}
+              loading={loading}
+              onUserDeleted={async () => {
+                // Refresh data after deletion
+                const [usersData, statsData] = await Promise.all([
+                  getAllUsers(),
+                  getAdminStats(),
+                ]);
+                setUsers(usersData);
+                setStats(statsData);
+              }}
             />
           </div>
         </div>

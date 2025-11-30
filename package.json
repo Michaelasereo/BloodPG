@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NEXT_PRIVATE_SKIP_TURBO=1 next build",
     "start": "next start",
     "lint": "next lint",
     "test:automated": "node scripts/automated-tests.js",
@@ -23,6 +23,7 @@
     "recharts": "^3.4.1"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.1",
     "@types/node": "20.19.25",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",

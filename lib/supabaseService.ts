@@ -195,8 +195,7 @@ export async function saveBloodPressureRecordToSupabase(
       .maybeSingle(); // Use maybeSingle() to avoid error if not found
 
     let data, error;
-    
-    let savedRecordId: number;
+    let savedRecordId: number | undefined;
     
     if (existing && !checkError) {
       // Update existing record
@@ -232,9 +231,14 @@ export async function saveBloodPressureRecordToSupabase(
       return null;
     }
 
-    // Use savedRecordId from above (either existing.id or new record id)
-    if (!savedRecordId) {
+    // Ensure we have the record ID
+    if (!savedRecordId && data) {
       savedRecordId = (data as BloodPressureRecordRow).id;
+    }
+
+    if (!savedRecordId) {
+      console.error('❌ No record ID available after save');
+      return null;
     }
 
     // Automatically link default medications to this record if they exist

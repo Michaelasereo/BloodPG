@@ -80,7 +80,7 @@ export async function getAllUsers(): Promise<AdminUser[]> {
       const apiUserMap = new Map(apiUsers.map((u: any) => [u.id, u]));
       
       for (const userId of userIds) {
-        const apiUser = apiUserMap.get(userId);
+        const apiUser = apiUserMap.get(userId) as { email?: string; name?: string; created_at?: string } | undefined;
         if (apiUser) {
           users.push({
             id: userId,

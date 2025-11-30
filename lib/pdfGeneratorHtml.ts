@@ -163,7 +163,6 @@ export async function generateBloodPressurePDF({
       width: 595,
       height: clonedElement.scrollHeight || 842,
       allowTaint: true,
-      letterRendering: true, // Better text rendering without size increase
       onclone: (clonedDoc, element) => {
         // Ensure cloned element is visible
         const clonedContent = element.querySelector('#pdf-export-clone') || element;
