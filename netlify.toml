@@ -8,3 +8,13 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Next.js configuration
+[functions]
+  node_bundler = "esbuild"
+
+# Redirects for Next.js routes
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/next"
+  status = 200
+
