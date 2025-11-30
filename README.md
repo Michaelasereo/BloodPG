@@ -84,3 +84,4 @@ The project uses:
 - **Client Components** (`'use client'`) only when needed for interactivity
 - **TypeScript** for type safety
 - **Tailwind CSS** for styling with custom configuration matching Figma specs
+# BloodPG
