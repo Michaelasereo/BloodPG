@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# BloodPG - Blood Pressure Tracker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A Next.js 14 application for tracking blood pressure and glucose levels, built from Figma design specifications.
 
-## Available Scripts
+## Tech Stack
 
-In the project directory, you can run:
+- **Next.js 14** with App Router
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling
+- **Server Components** for static content
+- **Client Components** for interactive elements
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Prerequisites
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Node.js 18+ 
+- npm or yarn
 
-### `npm test`
+### Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Install dependencies:
+```bash
+npm install
+```
 
-### `npm run build`
+2. Run the development server:
+```bash
+npm run dev
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Build for Production
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm run build
+npm start
+```
 
-### `npm run eject`
+## Project Structure
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+bloodpg/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Main dashboard page
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── Header/            # Header component
+│   ├── Sidebar/           # Sidebar with forms
+│   ├── MainContent/       # Main content area
+│   └── MainTabs/          # Main tab navigation
+├── lib/                   # Utility functions
+│   ├── mockData.ts       # Mock data service
+│   └── dateUtils.ts      # Date utility functions
+├── types/                 # TypeScript type definitions
+│   └── index.ts          # Shared types
+└── public/               # Static assets
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Features
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Blood pressure tracking with AM/PM readings
+- Medication management
+- Records table with filtering
+- Trends visualization
+- Date range selection
+- Theme toggle (light/dark mode)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Design
 
-## Learn More
+The application is built to match the Figma design exactly, including:
+- Exact spacing and sizing
+- Color palette
+- Typography (Helvetica Neue)
+- Component layouts
+- Interactive states
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Development
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The project uses:
+- **Server Components** by default for better performance
+- **Client Components** (`'use client'`) only when needed for interactivity
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling with custom configuration matching Figma specs

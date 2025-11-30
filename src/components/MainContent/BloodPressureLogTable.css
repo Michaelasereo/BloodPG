@@ -1,0 +1,127 @@
+.bp-log-table {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bp-log-table-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #000;
+}
+
+.bp-log-table-wrapper {
+  overflow-x: auto;
+}
+
+.bp-log-table-content {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.bp-log-table-content thead {
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.bp-log-table-content th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #000;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bp-log-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.bp-log-sortable:hover {
+  background-color: #e8e8e8;
+}
+
+.bp-log-sort-icon {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+.bp-log-table-content tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+.bp-log-table-content tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.bp-log-table-content td {
+  padding: 12px 16px;
+  color: #000;
+}
+
+.bp-log-medications {
+  margin: 0;
+  padding-left: 16px;
+  list-style: none;
+}
+
+.bp-log-medications li {
+  margin: 4px 0;
+  color: #666;
+}
+
+.bp-log-empty {
+  text-align: center;
+  color: #999;
+  padding: 32px;
+  font-style: italic;
+}
+
+[data-theme="dark"] .bp-log-table-title {
+  color: #fff;
+}
+
+[data-theme="dark"] .bp-log-table-content thead {
+  background-color: #2a2a2a;
+  border-bottom-color: #555;
+}
+
+[data-theme="dark"] .bp-log-table-content th {
+  color: #fff;
+}
+
+[data-theme="dark"] .bp-log-sortable:hover {
+  background-color: #333;
+}
+
+[data-theme="dark"] .bp-log-sort-icon {
+  color: #999;
+}
+
+[data-theme="dark"] .bp-log-table-content tbody tr {
+  border-bottom-color: #555;
+}
+
+[data-theme="dark"] .bp-log-table-content tbody tr:hover {
+  background-color: #333;
+}
+
+[data-theme="dark"] .bp-log-table-content td {
+  color: #fff;
+}
+
+[data-theme="dark"] .bp-log-medications li {
+  color: #999;
+}
+
+[data-theme="dark"] .bp-log-empty {
+  color: #666;
+}
+

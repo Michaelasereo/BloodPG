@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clear All Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    button {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 5px;
+    }
+    button:hover {
+      background: #b91c1c;
+    }
+    .info {
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Clear All BloodPG Data</h1>
+  <div class="info">
+    <p>This will clear:</p>
+    <ul>
+      <li>All blood pressure records from localStorage</li>
+      <li>All medications from localStorage</li>
+      <li>All data from Supabase database</li>
+    </ul>
+    <p><strong>⚠️ This action cannot be undone!</strong></p>
+  </div>
+  
+  <button onclick="clearAllData()">Clear All Data</button>
+  <button onclick="clearLocalStorageOnly()">Clear localStorage Only</button>
+  
+  <div id="status" style="margin-top: 20px;"></div>
+
+  <script>
+    function updateStatus(message, isError = false) {
+      const status = document.getElementById('status');
+      status.innerHTML = `<p style="color: ${isError ? 'red' : 'green'}">${message}</p>`;
+    }
+
+    async function clearAllData() {
+      if (!confirm('⚠️ Are you sure you want to clear ALL data? This cannot be undone!')) {
+        return;
+      }
+
+      updateStatus('🧹 Clearing data...');
+      
+      try {
+        // Clear localStorage
+        localStorage.removeItem('bloodpg-records');
+        localStorage.removeItem('bloodpg-medications');
+        updateStatus('✅ Cleared localStorage');
+        
+        // Clear Supabase
+        const response = await fetch('/api/admin/clear-data', {
+          method: 'POST',
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          updateStatus('✅ All data cleared! Redirecting...');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        } else {
+          const errorText = await response.text();
+          updateStatus('❌ Failed to clear Supabase: ' + errorText, true);
+        }
+      } catch (error) {
+        updateStatus('❌ Error: ' + error.message, true);
+      }
+    }
+
+    function clearLocalStorageOnly() {
+      if (!confirm('Clear localStorage only? (Supabase data will remain)')) {
+        return;
+      }
+
+      localStorage.removeItem('bloodpg-records');
+      localStorage.removeItem('bloodpg-medications');
+      updateStatus('✅ Cleared localStorage! Reload the app to see changes.');
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f2f2f2;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f2f2f2;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Radio button styling - black instead of blue */
+input[type="radio"] {
+  accent-color: black;
+  cursor: pointer;
+}
+
+/* Input field - keep border visible when typing, just change color to black */
+input:focus,
+input[type="number"]:focus,
+input[type="text"]:focus,
+input:focus-visible {
+  outline: none !important;
+  border-color: black !important;
+  box-shadow: none !important;
+}
+
+input:active {
+  outline: none !important;
+  border-color: black !important;
+}
+
+/* Select dropdown styling - black instead of blue */
+select {
+  cursor: pointer;
+  color: #7e7e7e;
+}
+
+select:focus {
+  outline: none;
+  border: none;
+  color: black;
+}
+
+select:focus-visible {
+  outline: none;
+}
+
+/* Custom select option styling - white background, black text */
+select option {
+  background-color: white;
+  color: black;
+  padding: 8px;
+}
+
+

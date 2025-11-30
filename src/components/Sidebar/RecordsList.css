@@ -1,0 +1,194 @@
+.records-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 24px;
+}
+
+.records-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.records-list-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #000;
+}
+
+.records-list-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.records-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.records-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.records-card:hover {
+  border-color: #333;
+}
+
+.records-card-expanded {
+  border-color: #000;
+}
+
+.records-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.records-card-date {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+}
+
+.records-download-icon {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.2s ease;
+}
+
+.records-download-icon:hover {
+  transform: scale(1.1);
+}
+
+.records-card-content {
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.records-medications {
+  background-color: #333;
+  color: #fff;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.records-medications-label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.records-medications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.records-medication-item {
+  font-size: 13px;
+  padding-left: 8px;
+}
+
+.records-readings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.records-reading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.records-reading-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+}
+
+.records-reading-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+}
+
+.records-list-actions {
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.records-download-all-btn {
+  width: 100%;
+}
+
+[data-theme="dark"] .records-list-title {
+  color: #fff;
+}
+
+[data-theme="dark"] .records-list-subtitle {
+  color: #999;
+}
+
+[data-theme="dark"] .records-card {
+  background-color: #2a2a2a;
+  border-color: #555;
+}
+
+[data-theme="dark"] .records-card:hover {
+  border-color: #fff;
+}
+
+[data-theme="dark"] .records-card-expanded {
+  border-color: #fff;
+}
+
+[data-theme="dark"] .records-card-date {
+  color: #fff;
+}
+
+[data-theme="dark"] .records-card-content {
+  border-top-color: #555;
+}
+
+[data-theme="dark"] .records-medications {
+  background-color: #444;
+}
+
+[data-theme="dark"] .records-reading-label {
+  color: #fff;
+}
+
+[data-theme="dark"] .records-reading-value {
+  color: #fff;
+}
+
+[data-theme="dark"] .records-list-actions {
+  border-top-color: #555;
+}
+
