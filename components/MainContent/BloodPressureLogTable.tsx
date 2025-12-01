@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { formatDateOrdinal } from '@/lib/dateUtils';
 import { formatMedicationWithDosage } from '@/lib/medicationUtils';
@@ -9,9 +10,28 @@ interface BloodPressureLogTableProps {
   records: BloodPressureRecord[];
 }
 
+type SortDirection = 'asc' | 'desc';
+
 export default function BloodPressureLogTable({
   records,
 }: BloodPressureLogTableProps) {
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+
+  // Sort records by date
+  const sortedRecords = useMemo(() => {
+    const sorted = [...records];
+    sorted.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    return sorted;
+  }, [records, sortDirection]);
+
+  const handleSort = () => {
+    setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
   // Show empty state if no records
   if (records.length === 0) {
     return (
@@ -35,7 +55,7 @@ export default function BloodPressureLogTable({
                   S/N
                 </p>
           </div>
-          {records.map((record, index) => (
+          {sortedRecords.map((record, index) => (
             <div
               key={`sn-${record.id}`}
               className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full"
@@ -53,18 +73,22 @@ export default function BloodPressureLogTable({
             <p className="flex-[1_0_0] font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] min-h-px min-w-px not-italic relative shrink-0 text-[12.41px] text-black whitespace-pre-wrap">
                     Date
                   </p>
-            <div className="box-border content-stretch flex flex-col items-center justify-center pb-[2.659px] pt-0 px-0 relative shrink-0 w-[10.637px]">
+            <button
+              onClick={handleSort}
+              className="box-border content-stretch flex flex-col items-center justify-center pb-[2.659px] pt-0 px-0 relative shrink-0 w-[10.637px] cursor-pointer hover:opacity-70 transition-opacity"
+              aria-label={`Sort by date ${sortDirection === 'asc' ? 'descending' : 'ascending'}`}
+            >
               <div className="flex items-center justify-center mb-[-2.659px] relative shrink-0 w-full">
-                <div className="flex-none rotate-[180deg] w-full">
+                <div className={`flex-none w-full transition-transform ${sortDirection === 'asc' ? 'rotate-0' : 'rotate-180'}`}>
                   <div className="aspect-[24/24] overflow-clip relative size-full">
                     <div className="absolute contents inset-0">
                       <Image
                         src="/mingcute_down-line.svg"
-                        alt="Sort"
+                        alt="Sort up"
                         width={24}
                         height={24}
                         className="object-contain"
-                          />
+                      />
                     </div>
                   </div>
                 </div>
@@ -73,16 +97,16 @@ export default function BloodPressureLogTable({
                 <div className="absolute contents inset-0">
                   <Image
                     src="/mingcute_down-line.svg"
-                    alt="Sort"
+                    alt="Sort down"
                     width={24}
                     height={24}
                     className="object-contain"
                   />
                 </div>
               </div>
-            </div>
+            </button>
           </div>
-          {records.map((record) => (
+          {sortedRecords.map((record) => (
             <div
               key={`date-${record.id}`}
               className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full"
@@ -106,7 +130,7 @@ export default function BloodPressureLogTable({
                       </p>
                     </div>
           </div>
-          {records.map((record) => (
+          {sortedRecords.map((record) => (
             <div
               key={`am-${record.id}`}
               className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-[117px]"
@@ -141,7 +165,7 @@ export default function BloodPressureLogTable({
               </p>
             </div>
           </div>
-          {records.map((record) => (
+          {sortedRecords.map((record) => (
             <div
               key={`pm-${record.id}`}
               className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full"
@@ -171,7 +195,7 @@ export default function BloodPressureLogTable({
               Current Medications
             </p>
                 </div>
-          {records.map((record) => (
+          {sortedRecords.map((record) => (
             <div
               key={`meds-${record.id}`}
               className="bg-white border-[#dadada] border-b border-l-0 border-r-0 border-solid border-t-0 box-border content-stretch flex h-[64px] items-center px-[24px] py-[12px] relative shrink-0 w-full"

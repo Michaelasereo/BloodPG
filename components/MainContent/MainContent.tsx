@@ -77,18 +77,28 @@ export default function MainContent({ activeMainTab = 'blood-pressure', allRecor
           // Authenticated: Show User Profile
           <>
             <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid justify-items-start leading-[0] relative shrink-0 flex-shrink-0" data-node-id="37:2260">
-              <div className="bg-[#d9d9d9] box-border col-[1] content-stretch flex gap-[7.5px] items-center ml-0 mt-0 p-[3px] relative rounded-[12px] row-[1] size-[24px]" data-node-id="37:2261">
-                <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid justify-items-start leading-[0] relative shrink-0" data-node-id="37:2262">
-                  <div className="col-[1] ml-0 mt-0 relative row-[1] size-[18px]" data-name="solar:user-bold" data-node-id="37:2263">
-                    <Image
-                      src="/solar_user-bold.svg"
-                      alt="User"
-                      width={18}
-                      height={18}
-                      className="object-contain"
-                    />
+              <div className="bg-[#d9d9d9] box-border col-[1] content-stretch flex gap-[7.5px] items-center justify-center ml-0 mt-0 p-0 relative rounded-full row-[1] size-[24px] overflow-hidden" data-node-id="37:2261">
+                {user?.avatar_url ? (
+                  <Image
+                    src={user.avatar_url}
+                    alt={user?.name || 'User'}
+                    width={24}
+                    height={24}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid justify-items-start leading-[0] relative shrink-0" data-node-id="37:2262">
+                    <div className="col-[1] ml-0 mt-0 relative row-[1] size-[18px]" data-name="solar:user-bold" data-node-id="37:2263">
+                      <Image
+                        src="/solar_user-bold.svg"
+                        alt="User"
+                        width={18}
+                        height={18}
+                        className="object-contain"
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
             <div className="flex gap-[9px] items-center relative min-w-0" data-node-id="37:2266">
