@@ -65,11 +65,23 @@ async function generateFavicons() {
       
       console.log(`📦 Generating ${name} (${size}x${size}px)...`);
       
+      // Make logo fill 95% of width for maximum visibility
+      // Since logo is wide (77x18 aspect ratio ~4.3:1), fill the width
+      const logoWidth = Math.floor(size * 0.95);
+      
       await sharp(Buffer.from(darkRedSvg))
-        .resize(size, size, {
+        .resize(logoWidth, null, { // null height = maintain aspect ratio
           fit: 'contain',
-          background: { r: 0, g: 0, b: 0, alpha: 0 } // Transparent background
+          background: { r: 0, g: 0, b: 0, alpha: 0 }
         })
+        .extend({
+          top: Math.floor((size - (logoWidth * 18 / 77)) / 2),
+          bottom: Math.ceil((size - (logoWidth * 18 / 77)) / 2),
+          left: Math.floor((size - logoWidth) / 2),
+          right: Math.ceil((size - logoWidth) / 2),
+          background: { r: 0, g: 0, b: 0, alpha: 0 }
+        })
+        .resize(size, size) // Ensure exact final size
         .png()
         .toFile(outputPath);
       
