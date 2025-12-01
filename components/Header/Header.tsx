@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import LogoIcon from '@/components/LogoIcon/LogoIcon';
 import Image from 'next/image';
 import AboutUsModal from '@/components/AboutUsModal/AboutUsModal';
@@ -26,31 +27,31 @@ export default function Header() {
       <header className="bg-white relative size-full h-[50px]" data-name="navbar">
         {/* Logo Section - Left */}
         <div className="absolute content-stretch flex gap-[5px] h-[32px] items-center left-[35px] top-[9px]" data-name="Logoicon">
-          <div className="h-[32px] relative shrink-0 w-[114px]" data-name="official-logo" data-node-id="I15:961;7:548">
+          <Link href="/" className="h-[32px] relative shrink-0 w-[114px]" data-name="official-logo" data-node-id="I15:961;7:548">
             <LogoIcon className="text-black" width={114} height={32} />
-          </div>
+          </Link>
       </div>
 
         {/* Nav Menu - Right */}
         <div className="absolute content-stretch flex gap-[20px] items-center right-[35px] top-[17px]" data-name="nav_menu">
-          <button
-            onClick={() => setShowAboutModal(true)}
+          <Link
+            href="/about"
             className="font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[10px] text-black hover:opacity-70 transition-opacity cursor-pointer"
           >
           ABOUT US
-          </button>
-          <button
-            onClick={() => setShowPrivacyModal(true)}
+          </Link>
+          <Link
+            href="/privacy-policy"
             className="font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[10px] text-black hover:opacity-70 transition-opacity cursor-pointer"
           >
           PRIVACY POLICY
-          </button>
-          <button
-            onClick={() => setShowTermsModal(true)}
+          </Link>
+          <Link
+            href="/terms-and-conditions"
             className="font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[10px] text-black hover:opacity-70 transition-opacity cursor-pointer"
           >
           TERMS AND CONDITIONS
-          </button>
+          </Link>
         <div className="content-stretch flex gap-[15px] items-center relative shrink-0" data-name="menu_icons">
           <button
             onClick={() => setShowSupportModal(true)}
