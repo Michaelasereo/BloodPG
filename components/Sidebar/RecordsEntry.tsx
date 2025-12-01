@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { formatDateOrdinal, getDateRangeForFilter, type DateFilter } from '@/lib/dateUtils';
 import { formatMedicationWithDosage } from '@/lib/medicationUtils';
+import { useAuth } from '@/lib/authContext';
 import type { BloodPressureRecord } from '@/types';
 
 interface RecordsEntryProps {
@@ -13,6 +14,7 @@ interface RecordsEntryProps {
 }
 
 export default function RecordsEntry({ selectedDate, allRecords, recordsLoaded }: RecordsEntryProps) {
+  const { user } = useAuth();
   const [dateFilter, setDateFilter] = useState<DateFilter>('all');
 
   // Listen for filter changes from RecordsDateFilter
@@ -47,11 +49,39 @@ export default function RecordsEntry({ selectedDate, allRecords, recordsLoaded }
     alert(`Downloading record for ${formatDateOrdinal(record.date)}`);
   }, []);
 
-  const handleDownloadAll = useCallback(() => {
-    console.log('Download all records');
-    // TODO: Implement download all functionality
-    alert('Downloading all records...');
-  }, []);
+  const handleDownloadAll = useCallback(async () => {
+    if (allRecords.length === 0) {
+      alert('No records available to download.');
+      return;
+    }
+
+    try {
+      // Get all records (no date filter)
+      const { generateBloodPressurePDF } = await import('@/lib/pdfGeneratorHtml');
+      const { useAuth } = await import('@/lib/authContext');
+      
+      // Get user info for PDF
+      const userName = user?.name || undefined;
+      const userEmail = user?.email || undefined;
+
+      // Find the earliest and latest dates from all records
+      const dates = allRecords.map(r => new Date(r.date));
+      const fromDate = new Date(Math.min(...dates.map(d => d.getTime())));
+      const toDate = new Date(Math.max(...dates.map(d => d.getTime())));
+
+      // Generate PDF with all records
+      await generateBloodPressurePDF({
+        records: allRecords,
+        fromDate,
+        toDate,
+        userName,
+        userEmail,
+      });
+    } catch (error) {
+      console.error('Error downloading all records:', error);
+      alert('Failed to download PDF. Please try again.');
+    }
+  }, [allRecords]);
 
   // Show loading only on initial app load, not when clicking the tab
   if (!recordsLoaded) {

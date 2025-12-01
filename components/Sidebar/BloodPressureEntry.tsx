@@ -102,8 +102,49 @@ export default function BloodPressureEntry({
     }
   }, [selectedDate, allRecords]);
 
+  // Validate blood pressure input
+  const validateBPInput = (value: string, isSystolic: boolean, otherValue: string): string => {
+    // Remove any non-digit characters
+    let cleaned = value.replace(/[^\d]/g, '');
+    
+    // Limit to 3 digits
+    if (cleaned.length > 3) {
+      cleaned = cleaned.slice(0, 3);
+    }
+    
+    return cleaned;
+  };
+
+  // Validate that systolic > diastolic
+  const validateBPValues = (systolic: string, diastolic: string): boolean => {
+    const sys = parseInt(systolic);
+    const dia = parseInt(diastolic);
+    
+    if (isNaN(sys) || isNaN(dia)) return true; // Allow empty values during input
+    if (sys <= dia) {
+      alert('Systolic must be greater than Diastolic');
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate AM readings
+    if (formData.am.systolic && formData.am.diastolic) {
+      if (!validateBPValues(formData.am.systolic, formData.am.diastolic)) {
+        return;
+      }
+    }
+    
+    // Validate PM readings
+    if (formData.pm.systolic && formData.pm.diastolic) {
+      if (!validateBPValues(formData.pm.systolic, formData.pm.diastolic)) {
+        return;
+      }
+    }
+    
     const success = await onSave(formData);
     // Only mark as saved if save was successful
     if (success) {
@@ -208,15 +249,18 @@ export default function BloodPressureEntry({
                 <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid justify-items-start leading-[0] relative shrink-0">
                   <div className="box-border col-[1] content-stretch flex flex-col gap-[5px] items-start ml-0 mt-0 relative row-[1] w-[113px]">
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       value={formData.am.systolic}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const validated = validateBPInput(e.target.value, true, formData.am.diastolic);
                         setFormData({
                           ...formData,
-                          am: { ...formData.am, systolic: e.target.value },
-                        })
-                      }
+                          am: { ...formData.am, systolic: validated },
+                        });
+                      }}
                       disabled={isSaved && !isEditing}
+                      maxLength={3}
                       className={`border border-[#d1d1d1] border-solid h-[40px] rounded-[10px] shrink-0 w-full px-3 ${
                         isSaved && !isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
                       }`}
@@ -227,15 +271,18 @@ export default function BloodPressureEntry({
                   </div>
                   <div className="box-border col-[1] content-stretch flex flex-col gap-[5px] items-start ml-[150px] mt-0 relative row-[1]">
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       value={formData.am.diastolic}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const validated = validateBPInput(e.target.value, false, formData.am.systolic);
                         setFormData({
                           ...formData,
-                          am: { ...formData.am, diastolic: e.target.value },
-                        })
-                      }
+                          am: { ...formData.am, diastolic: validated },
+                        });
+                      }}
                       disabled={isSaved && !isEditing}
+                      maxLength={3}
                       className={`border border-[#d1d1d1] border-solid h-[40px] rounded-[10px] shrink-0 w-full px-3 ${
                         isSaved && !isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
                       }`}
@@ -338,15 +385,18 @@ export default function BloodPressureEntry({
                 <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid justify-items-start leading-[0] relative shrink-0">
                   <div className="box-border col-[1] content-stretch flex flex-col gap-[5px] items-start ml-0 mt-0 relative row-[1] w-[113px]">
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       value={formData.pm.systolic}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const validated = validateBPInput(e.target.value, true, formData.pm.diastolic);
                         setFormData({
                           ...formData,
-                          pm: { ...formData.pm, systolic: e.target.value },
-                        })
-                      }
+                          pm: { ...formData.pm, systolic: validated },
+                        });
+                      }}
                       disabled={isSaved && !isEditing}
+                      maxLength={3}
                       className={`border border-[#d1d1d1] border-solid h-[40px] rounded-[10px] shrink-0 w-full px-3 ${
                         isSaved && !isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
                       }`}
@@ -357,15 +407,18 @@ export default function BloodPressureEntry({
                   </div>
                   <div className="box-border col-[1] content-stretch flex flex-col gap-[5px] items-start ml-[150px] mt-0 relative row-[1]">
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       value={formData.pm.diastolic}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const validated = validateBPInput(e.target.value, false, formData.pm.systolic);
                         setFormData({
                           ...formData,
-                          pm: { ...formData.pm, diastolic: e.target.value },
-                        })
-                      }
+                          pm: { ...formData.pm, diastolic: validated },
+                        });
+                      }}
                       disabled={isSaved && !isEditing}
+                      maxLength={3}
                       className={`border border-[#d1d1d1] border-solid h-[40px] rounded-[10px] shrink-0 w-full px-3 ${
                         isSaved && !isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
                       }`}

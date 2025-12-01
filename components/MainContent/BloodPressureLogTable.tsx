@@ -198,9 +198,10 @@ export default function BloodPressureLogTable({
           {sortedRecords.map((record) => (
             <div
               key={`meds-${record.id}`}
-              className="bg-white border-[#dadada] border-b border-l-0 border-r-0 border-solid border-t-0 box-border content-stretch flex h-[64px] items-center px-[24px] py-[12px] relative shrink-0 w-full"
+              className="bg-white border-[#dadada] border-b border-l-0 border-r-0 border-solid border-t-0 box-border content-stretch flex min-h-[64px] items-center px-[24px] py-[12px] relative shrink-0 w-full"
+              style={{ height: record.medications.length > 2 ? 'auto' : '64px' }}
             >
-              <div className="content-stretch flex flex-col font-['Helvetica_Neue:Italic',sans-serif] gap-[7.091px] items-start leading-[normal] not-italic relative shrink-0 text-[13.296px] text-black tracking-[-0.6648px] w-[190.603px] whitespace-pre-wrap">
+              <div className="content-stretch flex flex-col font-['Helvetica_Neue:Italic',sans-serif] gap-[7.091px] items-start leading-[normal] not-italic relative shrink-0 text-[13.296px] text-black tracking-[-0.6648px] w-full max-w-[250px] whitespace-pre-wrap">
                 {record.medications.map((med, medIndex) => {
                   // Format medication: ensure "Tabs" prefix and "mg" in dosage
                   let formattedMed = formatMedicationWithDosage(med);

@@ -246,6 +246,10 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
   };
 
   const handleAddMedication = () => {
+    if (medications.length >= 4) {
+      alert('Maximum of 4 medications allowed');
+      return;
+    }
     setMedications([
       ...medications,
       { id: Date.now().toString(), name: '', dosage: '', frequency: '' }
@@ -253,9 +257,20 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
   };
 
   const handleUpdateMedication = (id: string, field: 'name' | 'dosage' | 'frequency', value: string) => {
-    setMedications(medications.map(med =>
-      med.id === id ? { ...med, [field]: value } : med
-    ));
+    if (field === 'dosage') {
+      // Validate dosage: max 4 digits, no decimals
+      let cleaned = value.replace(/[^\d]/g, '');
+      if (cleaned.length > 4) {
+        cleaned = cleaned.slice(0, 4);
+      }
+      setMedications(medications.map(med =>
+        med.id === id ? { ...med, [field]: cleaned } : med
+      ));
+    } else {
+      setMedications(medications.map(med =>
+        med.id === id ? { ...med, [field]: value } : med
+      ));
+    }
   };
 
   const handleRemoveMedication = (id: string) => {
@@ -331,10 +346,12 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                       <div className="border border-[#ebebeb] border-solid box-border content-stretch flex gap-[10px] h-[40px] items-center px-[16px] py-[11px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
                         <input
                           type="text"
+                          inputMode="numeric"
                           value={medication.dosage}
                           onChange={(e) => handleUpdateMedication(medication.id, 'dosage', e.target.value)}
                           placeholder="100mg"
                           disabled={isSaved && !isEditing}
+                          maxLength={4}
                           className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[14px] tracking-[-0.14px] bg-transparent border-none outline-none w-full placeholder:text-[#7e7e7e] disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                       </div>
@@ -409,7 +426,7 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
               <button
                 type="button"
                 onClick={handleAddMedication}
-                disabled={isSaved && !isEditing}
+                disabled={(isSaved && !isEditing) || medications.length >= 4}
                 className="flex gap-[8px] items-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div className="relative shrink-0 size-[16px]">
