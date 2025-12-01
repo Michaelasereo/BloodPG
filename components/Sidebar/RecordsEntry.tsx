@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { formatDateOrdinal, getDateRangeForFilter, type DateFilter } from '@/lib/dateUtils';
+import { formatMedicationWithDosage } from '@/lib/medicationUtils';
 import type { BloodPressureRecord } from '@/types';
 
 interface RecordsEntryProps {
@@ -168,8 +169,9 @@ export default function RecordsEntry({ selectedDate, allRecords, recordsLoaded }
                   <div className="box-border content-stretch flex gap-[13px] items-center px-[12px] py-[6px] relative rounded-bl-[8px] rounded-br-[8px] shrink-0 w-full">
                     {record.medications && record.medications.length > 0 ? (
                       record.medications.map((medication, medIndex) => {
-                        // Format medication string if needed (ensure "Tabs" prefix)
-                        const formattedMed = medication.startsWith('Tabs') ? medication : `Tabs ${medication}`;
+                        // Format medication: ensure "Tabs" prefix and "mg" in dosage
+                        let formattedMed = formatMedicationWithDosage(medication);
+                        formattedMed = formattedMed.startsWith('Tabs') ? formattedMed : `Tabs ${formattedMed}`;
                         return (
                           <div key={medIndex} className="flex items-center gap-[13px]">
                             {medIndex > 0 && (

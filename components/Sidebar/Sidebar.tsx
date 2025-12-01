@@ -282,7 +282,24 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
         if (linkError) {
           console.error('Error linking medication to record:', linkError);
         } else {
-          medicationStrings.push(`${med.name} ${med.dosage || ''} ${med.frequency || ''}`.trim());
+          // Format dosage: add "mg" if it's a number and doesn't already have "mg"
+          const formatDosage = (dosage: string): string => {
+            if (!dosage || dosage.trim() === '') return '';
+            const trimmed = dosage.trim();
+            // Check if it already contains "mg" (case insensitive)
+            if (/\bmg\b/i.test(trimmed)) {
+              return trimmed;
+            }
+            // If it's a number, add "mg"
+            if (/^\d+$/.test(trimmed)) {
+              return `${trimmed}mg`;
+            }
+            // Otherwise return as is
+            return trimmed;
+          };
+          
+          const formattedDosage = formatDosage(med.dosage || '');
+          medicationStrings.push(`${med.name} ${formattedDosage} ${med.frequency || ''}`.trim());
         }
       }
 

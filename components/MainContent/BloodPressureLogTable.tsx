@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { formatDateOrdinal } from '@/lib/dateUtils';
+import { formatMedicationWithDosage } from '@/lib/medicationUtils';
 import type { BloodPressureRecord } from '@/types';
 
 interface BloodPressureLogTableProps {
@@ -177,8 +178,9 @@ export default function BloodPressureLogTable({
             >
               <div className="content-stretch flex flex-col font-['Helvetica_Neue:Italic',sans-serif] gap-[7.091px] items-start leading-[normal] not-italic relative shrink-0 text-[13.296px] text-black tracking-[-0.6648px] w-[190.603px] whitespace-pre-wrap">
                 {record.medications.map((med, medIndex) => {
-                  // Format medication string if needed (ensure "Tabs" prefix)
-                  const formattedMed = med.startsWith('Tabs') ? med : `Tabs ${med}`;
+                  // Format medication: ensure "Tabs" prefix and "mg" in dosage
+                  let formattedMed = formatMedicationWithDosage(med);
+                  formattedMed = formattedMed.startsWith('Tabs') ? formattedMed : `Tabs ${formattedMed}`;
                   return (
                     <div key={medIndex} className="flex items-center gap-[4px] relative shrink-0 w-[202.992px]">
                       <div className="relative shrink-0 size-[12px]">
