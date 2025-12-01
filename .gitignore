@@ -65,3 +65,6 @@ screenshots/
 *.tmp
 *.temp
 .cache/
+
+# Local Netlify folder
+.netlify

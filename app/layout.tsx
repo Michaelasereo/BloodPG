@@ -5,6 +5,11 @@ import { AuthProvider } from '@/lib/authContext'
 export const metadata: Metadata = {
   title: 'BloodPG - Blood Pressure Tracker',
   description: 'Track your blood pressure and glucose levels',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/logo192.png',
+  },
+  manifest: '/manifest.json',
 }
 
 export default function RootLayout({
