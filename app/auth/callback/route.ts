@@ -25,7 +25,19 @@ export async function GET(request: Request) {
     }
   }
 
+  // Get the correct origin - use environment variable if available, otherwise use request origin
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || requestUrl.origin;
+  
+  // Ensure we're not redirecting to localhost in production
+  const redirectUrl = new URL(next, siteUrl);
+  
+  // If we're in production but got localhost, use the site URL from env
+  if (process.env.NODE_ENV === 'production' && requestUrl.hostname === 'localhost') {
+    const productionUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bloodpg.com';
+    return NextResponse.redirect(new URL(next, productionUrl));
+  }
+
   // Redirect to the app after successful authentication
-  return NextResponse.redirect(new URL(next, requestUrl.origin));
+  return NextResponse.redirect(redirectUrl);
 }
 

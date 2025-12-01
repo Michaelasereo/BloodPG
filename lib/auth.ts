@@ -20,10 +20,15 @@ export interface AuthUser {
 export async function signInWithGoogle(redirectTo: string = '/'): Promise<void> {
   const supabase = getSupabaseClient();
   
+  // Get the correct origin - use environment variable if available, otherwise use window.location
+  const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL 
+    ? new URL(process.env.NEXT_PUBLIC_SITE_URL).origin 
+    : window.location.origin;
+  
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+      redirectTo: `${siteOrigin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
       queryParams: {
         access_type: 'offline',
         prompt: 'consent',
