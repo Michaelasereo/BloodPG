@@ -143,8 +143,25 @@ export async function getBloodPressureRecordsFromSupabase(): Promise<BloodPressu
             }
             const med = rm.medications;
             if (med && med.name) {
+              // Format dosage: add "mg" if it's a number and doesn't already have "mg"
+              const formatDosage = (dosage: string): string => {
+                if (!dosage || dosage.trim() === '') return '';
+                const trimmed = dosage.trim();
+                // Check if it already contains "mg" (case insensitive)
+                if (/\bmg\b/i.test(trimmed)) {
+                  return trimmed;
+                }
+                // If it's a number, add "mg"
+                if (/^\d+$/.test(trimmed)) {
+                  return `${trimmed}mg`;
+                }
+                // Otherwise return as is
+                return trimmed;
+              };
+              
+              const formattedDosage = formatDosage(med.dosage || '');
               medicationsMap.get(rm.record_id)!.push(
-                `${med.name} ${med.dosage || ''} ${med.frequency || ''}`.trim()
+                `${med.name} ${formattedDosage} ${med.frequency || ''}`.trim()
               );
             }
           });
