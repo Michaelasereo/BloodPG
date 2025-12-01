@@ -31,11 +31,17 @@ export default function BloodPressureEntry({
       postMedication: false,
     },
   });
+  const [originalFormData, setOriginalFormData] = useState<BloodPressureFormData | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   // Load existing data when date changes or when records are loaded
   useEffect(() => {
+    // Don't reload if user is currently editing
+    if (isEditing) {
+      return;
+    }
+
     // Normalize dates to YYYY-MM-DD format for comparison (ignore time/timezone)
     const normalizeDate = (date: Date): string => {
       const d = new Date(date);
@@ -64,7 +70,7 @@ export default function BloodPressureEntry({
     if (existingRecord) {
       console.log('✅ Found existing record:', existingRecord.id);
       // Load existing data and set to saved state
-      setFormData({
+      const loadedData = {
         am: {
           systolic: existingRecord.am.systolic.toString(),
           diastolic: existingRecord.am.diastolic.toString(),
@@ -77,13 +83,15 @@ export default function BloodPressureEntry({
           preMedication: existingRecord.pm.preMedication,
           postMedication: existingRecord.pm.postMedication,
         },
-      });
+      };
+      setFormData(loadedData);
+      setOriginalFormData(loadedData);
       setIsSaved(true);
       setIsEditing(false);
     } else {
       console.log('ℹ️ No record found for date:', selectedDateStr);
       // Reset to empty form (this will run when records are loaded and no match is found)
-      setFormData({
+      const emptyData = {
         am: {
           systolic: '',
           diastolic: '',
@@ -96,11 +104,13 @@ export default function BloodPressureEntry({
           preMedication: true,
           postMedication: false,
         },
-      });
+      };
+      setFormData(emptyData);
+      setOriginalFormData(emptyData);
       setIsSaved(false);
       setIsEditing(false);
     }
-  }, [selectedDate, allRecords]);
+  }, [selectedDate, allRecords, isEditing]);
 
   // Validate blood pressure input
   const validateBPInput = (value: string, isSystolic: boolean, otherValue: string): string => {
@@ -168,12 +178,29 @@ export default function BloodPressureEntry({
   }, []);
 
   const handleEdit = () => {
+    // Store current values as original before editing
+    setOriginalFormData({ ...formData });
     setIsEditing(true);
     setIsSaved(false);
   };
 
+  const handleCancel = () => {
+    // Restore original values
+    if (originalFormData) {
+      setFormData({ ...originalFormData });
+    }
+    setIsEditing(false);
+    setIsSaved(true);
+    onCancel();
+  };
+
   // Listen for record updates to refresh form if current date's record was updated
   useEffect(() => {
+    // Don't reload if user is currently editing
+    if (isEditing) {
+      return;
+    }
+
     const handleRecordSaved = () => {
       // Normalize dates for comparison
       const normalizeDate = (date: Date): string => {
@@ -190,7 +217,7 @@ export default function BloodPressureEntry({
       });
 
       if (existingRecord) {
-        setFormData({
+        const loadedData = {
           am: {
             systolic: existingRecord.am.systolic.toString(),
             diastolic: existingRecord.am.diastolic.toString(),
@@ -203,7 +230,9 @@ export default function BloodPressureEntry({
             preMedication: existingRecord.pm.preMedication,
             postMedication: existingRecord.pm.postMedication,
           },
-        });
+        };
+        setFormData(loadedData);
+        setOriginalFormData(loadedData);
         setIsSaved(true);
         setIsEditing(false);
       }
@@ -213,7 +242,7 @@ export default function BloodPressureEntry({
     return () => {
       window.removeEventListener('bloodpg:record-saved', handleRecordSaved);
     };
-  }, [selectedDate, allRecords]);
+  }, [selectedDate, allRecords, isEditing]);
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-[19px] items-end justify-center w-[352px]">
@@ -506,36 +535,40 @@ export default function BloodPressureEntry({
 
       {/* Buttons */}
       <div className="flex gap-[16px] items-center">
-        {!isSaved && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="border border-black border-solid box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[13px] py-[10px] relative rounded-[20px] shrink-0 w-[92px]"
-          >
-            <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#1d1d1d] text-[12px] tracking-[-0.12px]">
-              Cancel
-            </p>
-          </button>
-        )}
-        {!isSaved ? (
-          <button
-            type="submit"
-            className="bg-[#212121] box-border flex gap-[10px] h-[35px] items-center justify-center px-[11px] py-[6px] rounded-[20px] w-[148px]"
-          >
-            <p className="font-normal text-white text-[12px] tracking-[-0.12px] whitespace-nowrap">
-              Save
-            </p>
-          </button>
-        ) : (
+        {isSaved && !isEditing ? (
           <button
             type="button"
             onClick={handleEdit}
-            className="bg-[#212121] box-border flex gap-[10px] h-[35px] items-center justify-center px-[11px] py-[6px] rounded-[20px] w-[148px]"
+            className="bg-[#212121] box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[11px] py-[6px] relative rounded-[20px] shrink-0 w-[148px]"
           >
-            <p className="font-normal text-white text-[12px] tracking-[-0.12px] whitespace-nowrap">
-              Edit
-            </p>
+            <div className="content-stretch flex gap-[3px] items-center relative shrink-0">
+              <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[12px] text-white tracking-[-0.12px]">
+                Edit
+              </p>
+            </div>
           </button>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="border border-black border-solid box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[13px] py-[10px] relative rounded-[20px] shrink-0 w-[92px]"
+            >
+              <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#1d1d1d] text-[12px] tracking-[-0.12px]">
+                Cancel
+              </p>
+            </button>
+            <button
+              type="submit"
+              className="bg-[#212121] box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[11px] py-[6px] relative rounded-[20px] shrink-0 w-[148px]"
+            >
+              <div className="content-stretch flex gap-[3px] items-center relative shrink-0">
+                <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[12px] text-white tracking-[-0.12px]">
+                  Save
+                </p>
+              </div>
+            </button>
+          </>
         )}
       </div>
     </form>

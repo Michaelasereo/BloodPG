@@ -29,6 +29,7 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
   const [medications, setMedications] = useState<MedicationItem[]>([
     { id: '1', name: '', dosage: '', frequency: '' }
   ]);
+  const [originalMedications, setOriginalMedications] = useState<MedicationItem[] | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -40,6 +41,11 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
 
   // Load existing medications when date changes or records are loaded
   useEffect(() => {
+    // Don't reload if user is currently editing
+    if (isEditing) {
+      return;
+    }
+
     const loadExistingMedications = async () => {
       // Normalize dates for comparison
       const normalizeDate = (date: Date): string => {
@@ -63,12 +69,14 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           const cachedMeds = medicationsMap.get(record.id)!;
           if (cachedMeds.length > 0) {
             console.log('✅ Using cached medications for record:', record.id);
-            setMedications(cachedMeds.map((m, index) => ({
+            const loadedMeds = cachedMeds.map((m, index) => ({
               id: (index + 1).toString(),
               name: m.name,
               dosage: m.dosage || '',
               frequency: m.frequency || ''
-            })));
+            }));
+            setMedications(loadedMeds);
+            setOriginalMedications(loadedMeds);
             setIsSaved(true);
             setIsEditing(false);
             return; // Exit early, no need to fetch
@@ -81,22 +89,28 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           const defaultMeds = await getDefaultMedications();
           if (defaultMeds.length > 0) {
             console.log('✅ Found default medications:', defaultMeds);
-            setMedications(defaultMeds.map((m, index) => ({
+            const loadedMeds = defaultMeds.map((m, index) => ({
               id: (index + 1).toString(),
               name: m.name,
               dosage: m.dosage || '',
               frequency: m.frequency || ''
-            })));
+            }));
+            setMedications(loadedMeds);
+            setOriginalMedications(loadedMeds);
             setIsSaved(true); // Mark as saved since defaults are loaded
             setIsEditing(false);
           } else {
-            setMedications([{ id: '1', name: '', dosage: '', frequency: '' }]);
+            const emptyMeds = [{ id: '1', name: '', dosage: '', frequency: '' }];
+            setMedications(emptyMeds);
+            setOriginalMedications(emptyMeds);
             setIsSaved(false);
             setIsEditing(false);
           }
         } catch (error) {
           console.error('Error loading default medications:', error);
-          setMedications([{ id: '1', name: '', dosage: '', frequency: '' }]);
+          const emptyMeds = [{ id: '1', name: '', dosage: '', frequency: '' }];
+          setMedications(emptyMeds);
+          setOriginalMedications(emptyMeds);
           setIsSaved(false);
           setIsEditing(false);
         }
@@ -107,30 +121,41 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           const defaultMeds = await getDefaultMedications();
           if (defaultMeds.length > 0) {
             console.log('✅ Found default medications:', defaultMeds);
-            setMedications(defaultMeds.map((m, index) => ({
+            const loadedMeds = defaultMeds.map((m, index) => ({
               id: (index + 1).toString(),
               name: m.name,
               dosage: m.dosage || '',
               frequency: m.frequency || ''
-            })));
+            }));
+            setMedications(loadedMeds);
+            setOriginalMedications(loadedMeds);
             setIsSaved(true);
           } else {
-            setMedications([{ id: '1', name: '', dosage: '', frequency: '' }]);
+            const emptyMeds = [{ id: '1', name: '', dosage: '', frequency: '' }];
+            setMedications(emptyMeds);
+            setOriginalMedications(emptyMeds);
             setIsSaved(false);
           }
         } catch (error) {
           console.error('Error loading default medications:', error);
-          setMedications([{ id: '1', name: '', dosage: '', frequency: '' }]);
+          const emptyMeds = [{ id: '1', name: '', dosage: '', frequency: '' }];
+          setMedications(emptyMeds);
+          setOriginalMedications(emptyMeds);
           setIsSaved(false);
         }
       }
     };
 
     loadExistingMedications();
-  }, [selectedDate, allRecords, medicationsMap, medicationsLoaded]);
+  }, [selectedDate, allRecords, medicationsMap, medicationsLoaded, isEditing]);
 
   // Listen for record updates to refresh medications
   useEffect(() => {
+    // Don't reload if user is currently editing
+    if (isEditing) {
+      return;
+    }
+
     const handleRecordSaved = async () => {
       // Normalize dates for comparison
       const normalizeDate = (date: Date): string => {
@@ -170,22 +195,28 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           const defaultMeds = await getDefaultMedications();
           if (defaultMeds.length > 0) {
             console.log('✅ Found default medications after record save:', defaultMeds);
-            setMedications(defaultMeds.map((m, index) => ({
+            const loadedMeds = defaultMeds.map((m, index) => ({
               id: (index + 1).toString(),
               name: m.name,
               dosage: m.dosage || '',
               frequency: m.frequency || ''
-            })));
+            }));
+            setMedications(loadedMeds);
+            setOriginalMedications(loadedMeds);
             setIsSaved(true);
             setIsEditing(false);
           } else {
-            setMedications([{ id: '1', name: '', dosage: '', frequency: '' }]);
+            const emptyMeds = [{ id: '1', name: '', dosage: '', frequency: '' }];
+            setMedications(emptyMeds);
+            setOriginalMedications(emptyMeds);
             setIsSaved(false);
             setIsEditing(false);
           }
         } catch (defaultError) {
           console.error('Error loading default medications:', defaultError);
-          setMedications([{ id: '1', name: '', dosage: '', frequency: '' }]);
+          const emptyMeds = [{ id: '1', name: '', dosage: '', frequency: '' }];
+          setMedications(emptyMeds);
+          setOriginalMedications(emptyMeds);
           setIsSaved(false);
           setIsEditing(false);
         }
@@ -196,7 +227,7 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
     return () => {
       window.removeEventListener('bloodpg:record-saved', handleRecordSaved);
     };
-  }, [selectedDate, allRecords, medicationsMap, medicationsLoaded]);
+  }, [selectedDate, allRecords, medicationsMap, medicationsLoaded, isEditing]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -459,6 +490,8 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           <button
             type="button"
             onClick={() => {
+              // Store current values as original before editing
+              setOriginalMedications([...medications]);
               setIsSaved(false);
               setIsEditing(true);
             }}
@@ -474,7 +507,15 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           <>
             <button
               type="button"
-              onClick={onCancel}
+              onClick={() => {
+                // Restore original values
+                if (originalMedications) {
+                  setMedications([...originalMedications]);
+                }
+                setIsEditing(false);
+                setIsSaved(true);
+                onCancel();
+              }}
               className="border border-black border-solid box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[13px] py-[10px] relative rounded-[20px] shrink-0 w-[92px]"
             >
               <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#1d1d1d] text-[12px] tracking-[-0.12px]">

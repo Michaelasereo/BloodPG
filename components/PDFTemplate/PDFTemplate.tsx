@@ -282,9 +282,10 @@ export default function PDFTemplate({
                         // Format medication string if needed (ensure "Tabs" prefix)
                         const formattedMed = med.startsWith('Tabs') ? med : `Tabs ${med}`;
                         return (
-                          <p key={medIndex} style={{ margin: 0, lineHeight: '1.2' }}>
-                            -{formattedMed}
-                          </p>
+                          <div key={medIndex} style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: 0, lineHeight: '1.2' }}>
+                            <span style={{ fontSize: '8px', marginRight: '2px' }}>💊</span>
+                            <span>-{formattedMed}</span>
+                          </div>
                         );
                       })}
                     </div>
