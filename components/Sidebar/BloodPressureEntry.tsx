@@ -246,7 +246,6 @@ export default function BloodPressureEntry({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-[19px] items-end justify-center w-[352px]">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-[19px] items-end justify-center w-[352px] relative">
       <div className="flex flex-col gap-[42px] items-end w-full">
         <div className="flex flex-col gap-[28px] items-start w-full">
           <div className="flex flex-col gap-[8px] items-start w-[276px]">
