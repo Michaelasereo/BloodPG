@@ -133,7 +133,7 @@ export default function BloodPressureLogTable({
           {sortedRecords.map((record) => (
             <div
               key={`am-${record.id}`}
-              className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-[117px]"
+              className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center gap-[8px] px-[24px] py-[12px] relative shrink-0 w-[117px]"
             >
               <p className="flex-[1_0_0] font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] min-h-px min-w-px not-italic relative shrink-0 text-[17.729px] text-black tracking-[0.1773px] whitespace-pre-wrap">
                         {record.am.systolic}/{record.am.diastolic}
@@ -168,7 +168,7 @@ export default function BloodPressureLogTable({
           {sortedRecords.map((record) => (
             <div
               key={`pm-${record.id}`}
-              className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full"
+              className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center gap-[8px] px-[24px] py-[12px] relative shrink-0 w-full"
             >
               <p className="flex-[1_0_0] font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] min-h-px min-w-px not-italic relative shrink-0 text-[17.729px] text-black tracking-[0.1773px] whitespace-pre-wrap">
                         {record.pm.systolic}/{record.pm.diastolic}
