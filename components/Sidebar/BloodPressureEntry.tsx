@@ -573,7 +573,6 @@ export default function BloodPressureEntry({
         )}
       </div>
     </form>
-    </div>
   );
 }
 
