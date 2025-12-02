@@ -139,7 +139,7 @@ export default function BloodPressureLogTable({
                         {record.am.systolic}/{record.am.diastolic}
                       </p>
               {record.am.postMedication && (
-                <div className="relative shrink-0 size-[12px] ml-[4px]">
+                <div className="relative shrink-0 size-[12px]">
                   <Image
                     src="/mdi_drugs.svg"
                     alt="Medication"
@@ -174,7 +174,7 @@ export default function BloodPressureLogTable({
                         {record.pm.systolic}/{record.pm.diastolic}
                       </p>
               {record.pm.postMedication && (
-                <div className="relative shrink-0 size-[12px] ml-[4px]">
+                <div className="relative shrink-0 size-[12px]">
                   <Image
                     src="/mdi_drugs.svg"
                     alt="Medication"

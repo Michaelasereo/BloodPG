@@ -69,33 +69,36 @@ export default function MainContent({ activeMainTab = 'blood-pressure', allRecor
 
   // Auto-adjust date range when new records are saved
   useEffect(() => {
-    if (allRecords.length === 0) return;
-
     const handleRecordSaved = () => {
-      // Find the most recent record date
-      const mostRecentDate = allRecords.reduce((latest, record) => {
-        const recordDate = new Date(record.date);
-        return recordDate > latest ? recordDate : latest;
-      }, new Date(0));
+      // Wait a bit for records to be refreshed in the parent component
+      setTimeout(() => {
+        if (allRecords.length === 0) return;
 
-      // Check if the most recent date is outside the current range
-      const from = new Date(fromDate);
-      const to = new Date(toDate);
-      from.setHours(0, 0, 0, 0);
-      to.setHours(23, 59, 59, 999);
-      mostRecentDate.setHours(0, 0, 0, 0);
+        // Find the most recent record date
+        const mostRecentDate = allRecords.reduce((latest, record) => {
+          const recordDate = new Date(record.date);
+          return recordDate > latest ? recordDate : latest;
+        }, new Date(0));
 
-      // If the most recent record is outside the range, adjust the range
-      if (mostRecentDate < from || mostRecentDate > to) {
-        // Expand range to include the new record (show last 30 days from most recent date)
-        const newToDate = new Date(mostRecentDate);
-        const newFromDate = new Date(mostRecentDate);
-        newFromDate.setDate(newFromDate.getDate() - 30);
-        
-        setFromDate(newFromDate);
-        setToDate(newToDate);
-        console.log('📅 Auto-adjusted date range to include new record:', newFromDate, 'to', newToDate);
-      }
+        // Check if the most recent date is outside the current range
+        const from = new Date(fromDate);
+        const to = new Date(toDate);
+        from.setHours(0, 0, 0, 0);
+        to.setHours(23, 59, 59, 999);
+        mostRecentDate.setHours(0, 0, 0, 0);
+
+        // If the most recent record is outside the range, adjust the range
+        if (mostRecentDate < from || mostRecentDate > to) {
+          // Expand range to include the new record (show last 30 days from most recent date)
+          const newToDate = new Date(mostRecentDate);
+          const newFromDate = new Date(mostRecentDate);
+          newFromDate.setDate(newFromDate.getDate() - 30);
+          
+          setFromDate(newFromDate);
+          setToDate(newToDate);
+          console.log('📅 Auto-adjusted date range to include new record:', newFromDate, 'to', newToDate);
+        }
+      }, 300); // Small delay to ensure records are refreshed
     };
 
     window.addEventListener('bloodpg:record-saved', handleRecordSaved);
