@@ -106,7 +106,6 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
       const savedRecord = await saveBloodPressureRecordUnified(record);
       
       if (savedRecord) {
-        alert('Blood pressure record saved successfully!');
         // Notify other components to refresh
         window.dispatchEvent(new CustomEvent('bloodpg:record-saved'));
         return true; // Return true to indicate save was successful
@@ -525,7 +524,7 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
               </div>
 
               {/* Content Area */}
-              <div className="w-full">
+              <div className="w-full relative">
                 {activeTab === 'enter' && (
                   <BloodPressureEntry
                     selectedDate={selectedDate}

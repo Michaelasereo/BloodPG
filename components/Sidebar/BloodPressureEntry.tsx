@@ -34,6 +34,7 @@ export default function BloodPressureEntry({
   const [originalFormData, setOriginalFormData] = useState<BloodPressureFormData | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
   // Load existing data when date changes or when records are loaded
   useEffect(() => {
@@ -160,6 +161,11 @@ export default function BloodPressureEntry({
     if (success) {
       setIsSaved(true);
       setIsEditing(false);
+      setShowSuccessScreen(true);
+      // Auto-hide success screen after 5 seconds
+      setTimeout(() => {
+        setShowSuccessScreen(false);
+      }, 5000);
     }
     // If save failed (e.g., user not authenticated), keep form editable
   };
@@ -169,6 +175,11 @@ export default function BloodPressureEntry({
     const handleSaveSuccess = () => {
       setIsSaved(true);
       setIsEditing(false);
+      setShowSuccessScreen(true);
+      // Auto-hide success screen after 5 seconds
+      setTimeout(() => {
+        setShowSuccessScreen(false);
+      }, 5000);
     };
 
     window.addEventListener('bloodpg:save-success', handleSaveSuccess);
@@ -245,7 +256,90 @@ export default function BloodPressureEntry({
   }, [selectedDate, allRecords, isEditing]);
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-[19px] items-end justify-center w-[352px]">
+    <div className="relative w-full">
+      {/* Success Screen Overlay - positioned at bottom of sidebar content area */}
+      {showSuccessScreen && (
+        <div className="absolute left-[-14.5px] top-[417px] z-50 bg-[#1f1f1f] rounded-tl-[18.18px] rounded-tr-[18.18px] flex flex-col items-center justify-center px-[51.076px] py-[39.822px] w-[419px] h-[315px]">
+          {/* Close Button */}
+          <button
+            onClick={() => setShowSuccessScreen(false)}
+            className="absolute top-[19px] right-[19px] size-[21.973px] hover:opacity-80 transition-opacity"
+            aria-label="Close"
+          >
+            <Image
+              src="/ic_round-cancel.svg"
+              alt="Close"
+              width={22}
+              height={22}
+              className="object-contain"
+            />
+          </button>
+
+          {/* Logo */}
+          <div className="flex gap-[4.329px] items-center mb-[19.045px]">
+            <div className="h-[14.867px] w-[66.173px] relative">
+              <Image
+                src="/official-logo.svg"
+                alt="BloodPG Logo"
+                width={66}
+                height={15}
+                className="object-contain brightness-0 invert"
+              />
+            </div>
+            <div className="h-[12.986px] w-[27.702px] relative">
+              <Image
+                src="/beta.svg"
+                alt="Beta"
+                width={28}
+                height={13}
+                className="object-contain brightness-0 invert"
+              />
+            </div>
+          </div>
+
+          {/* Check Badge Icon */}
+          <div className="relative size-[62px] mb-[21.643px]">
+            <Image
+              src="/streamline-ultimate_check-badge-bold.svg"
+              alt="Success"
+              width={62}
+              height={62}
+              className="object-contain"
+            />
+          </div>
+
+          {/* Success Message */}
+          <p className="font-medium text-[25.91px] text-white text-center mb-[21.643px] tracking-[-0.7773px]">
+            Blood Pressure Saved!🎉
+          </p>
+
+          {/* Notification Box */}
+          <div className="flex flex-col gap-[7.791px] items-center w-[292.607px]">
+            <div className="border border-white border-solid rounded-[8.657px] p-[7.791px] w-full">
+              <div className="flex gap-[2.597px] items-start">
+                <div className="relative size-[16px] mt-[2px] shrink-0">
+                  <Image
+                    src="/mingcute_notification-fill.svg"
+                    alt="Notification"
+                    width={16}
+                    height={16}
+                    className="object-contain"
+                  />
+                </div>
+                <p className="font-medium text-[10.388px] text-white leading-[12.986px] tracking-[-0.3117px] flex-1">
+                  Your reading has been successfully recorded securely!
+                </p>
+              </div>
+            </div>
+            <p className="font-medium text-[#727272] text-[8.657px] tracking-[-0.4329px] text-center">
+              Keep tracking—every entry helps you stay informed.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-[19px] items-end justify-center w-[352px] relative">
       <div className="flex flex-col gap-[42px] items-end w-full">
         <div className="flex flex-col gap-[28px] items-start w-full">
           <div className="flex flex-col gap-[8px] items-start w-[276px]">
@@ -572,6 +666,7 @@ export default function BloodPressureEntry({
         )}
       </div>
     </form>
+    </div>
   );
 }
 
