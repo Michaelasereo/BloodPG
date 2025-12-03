@@ -536,23 +536,24 @@ export async function getAllMedicationsForRecords(recordIds: number[]): Promise<
           const excessMeds = medsArray.splice(4);
           // Delete excess medications from database
           excessMeds.forEach((excessMed) => {
-            cleanupPromises.push(
-              supabase
-                .from('record_medications')
-                .delete()
-                .eq('record_id', recordId)
-                .eq('medication_id', excessMed.id)
-                .then(({ error }) => {
-                  if (error) {
-                    console.error(`Error deleting excess medication ${excessMed.id}:`, error);
-                  } else {
-                    console.log(`✅ Deleted excess medication ${excessMed.id} from record ${recordId}`);
-                  }
-                })
-                .catch((error) => {
-                  console.error(`Error deleting excess medication:`, error);
-                })
-            );
+            const deletePromise = (async () => {
+              try {
+                const { error } = await supabase
+                  .from('record_medications')
+                  .delete()
+                  .eq('record_id', recordId)
+                  .eq('medication_id', excessMed.id);
+                
+                if (error) {
+                  console.error(`Error deleting excess medication ${excessMed.id}:`, error);
+                } else {
+                  console.log(`✅ Deleted excess medication ${excessMed.id} from record ${recordId}`);
+                }
+              } catch (error) {
+                console.error(`Error deleting excess medication:`, error);
+              }
+            })();
+            cleanupPromises.push(deletePromise);
           });
         }
       });
