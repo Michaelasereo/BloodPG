@@ -524,8 +524,45 @@ export async function getAllMedicationsForRecords(recordIds: number[]): Promise<
         if (!medicationsMap.has(recordId)) {
           medicationsMap.set(recordId, []);
         }
-        medicationsMap.get(recordId)!.push(medication);
+        const medsArray = medicationsMap.get(recordId)!;
+        medsArray.push(medication);
       });
+
+      // Clean up excess medications (keep only first 4 per record)
+      const cleanupPromises: Promise<void>[] = [];
+      medicationsMap.forEach((medsArray, recordId) => {
+        if (medsArray.length > 4) {
+          console.log(`⚠️ Record ${recordId} has ${medsArray.length} medications, limiting to 4`);
+          const excessMeds = medsArray.splice(4);
+          // Delete excess medications from database
+          excessMeds.forEach((excessMed) => {
+            cleanupPromises.push(
+              supabase
+                .from('record_medications')
+                .delete()
+                .eq('record_id', recordId)
+                .eq('medication_id', excessMed.id)
+                .then(({ error }) => {
+                  if (error) {
+                    console.error(`Error deleting excess medication ${excessMed.id}:`, error);
+                  } else {
+                    console.log(`✅ Deleted excess medication ${excessMed.id} from record ${recordId}`);
+                  }
+                })
+                .catch((error) => {
+                  console.error(`Error deleting excess medication:`, error);
+                })
+            );
+          });
+        }
+      });
+
+      // Clean up in background (don't block)
+      if (cleanupPromises.length > 0) {
+        Promise.all(cleanupPromises).catch((error) => {
+          console.error('Error during medication cleanup:', error);
+        });
+      }
     }
 
     console.log('✅ Pre-loaded medications for', medicationsMap.size, 'records');

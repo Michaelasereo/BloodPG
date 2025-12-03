@@ -240,6 +240,12 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
         return false;
       }
 
+      // Limit to max 4 medications
+      if (validMedications.length > 4) {
+        alert('Maximum of 4 medications allowed. Please remove excess medications.');
+        return false;
+      }
+
       // Get existing medications for this record to check if we're editing
       const existingMedsForRecord = medicationsMap.has(todayRecord.id) 
         ? medicationsMap.get(todayRecord.id)! 

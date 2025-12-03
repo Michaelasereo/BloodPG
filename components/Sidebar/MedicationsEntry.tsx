@@ -69,7 +69,9 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           const cachedMeds = medicationsMap.get(record.id)!;
           if (cachedMeds.length > 0) {
             console.log('✅ Using cached medications for record:', record.id);
-            const loadedMeds = cachedMeds.map((m, index) => ({
+            // Limit to max 4 medications
+            const limitedMeds = cachedMeds.slice(0, 4);
+            const loadedMeds = limitedMeds.map((m, index) => ({
               id: (index + 1).toString(),
               name: m.name,
               dosage: m.dosage || '',
@@ -89,7 +91,9 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           const defaultMeds = await getDefaultMedications();
           if (defaultMeds.length > 0) {
             console.log('✅ Found default medications:', defaultMeds);
-            const loadedMeds = defaultMeds.map((m, index) => ({
+            // Limit to max 4 medications
+            const limitedDefaultMeds = defaultMeds.slice(0, 4);
+            const loadedMeds = limitedDefaultMeds.map((m, index) => ({
               id: (index + 1).toString(),
               name: m.name,
               dosage: m.dosage || '',
@@ -121,7 +125,9 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
           const defaultMeds = await getDefaultMedications();
           if (defaultMeds.length > 0) {
             console.log('✅ Found default medications:', defaultMeds);
-            const loadedMeds = defaultMeds.map((m, index) => ({
+            // Limit to max 4 medications
+            const limitedDefaultMeds = defaultMeds.slice(0, 4);
+            const loadedMeds = limitedDefaultMeds.map((m, index) => ({
               id: (index + 1).toString(),
               name: m.name,
               dosage: m.dosage || '',
@@ -246,6 +252,12 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
       return;
     }
 
+    // Limit to max 4 medications
+    if (validMedications.length > 4) {
+      alert('Maximum of 4 medications allowed. Please remove excess medications.');
+      return;
+    }
+
     // Check for duplicate drug names in the valid medications list
     const drugNames = validMedications.map(m => m.name.trim().toLowerCase());
     const uniqueDrugNames = new Set(drugNames);
@@ -342,33 +354,30 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
         medications={savedMedications}
         onSetAsDefault={handleSetAsDefault}
       />
-      <form onSubmit={handleSubmit} className="flex flex-col w-[352px] max-w-full">
-        <div className="flex flex-col min-h-0 w-full">
-          {/* Scrollable Content Area */}
-          <div className="flex flex-col gap-[28px] items-start overflow-y-auto max-h-[480px] min-h-0 pr-2">
-            <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0 w-full max-w-[377px]">
-              {/* Current Medications Header */}
-              <div className="content-stretch flex flex-col font-['Helvetica_Neue:Medium',sans-serif] gap-[8px] items-start not-italic relative shrink-0 w-full whitespace-pre-wrap">
-                <p className="leading-[normal] relative shrink-0 text-[17px] text-black tracking-[-0.17px] w-full">
-                  Current Medications
-                </p>
-                <p className="leading-[20px] relative shrink-0 text-[14px] text-neutral-400 tracking-[-0.42px] w-full">
-                  Tracking your medications helps you see the full picture of your health management.
-                </p>
-              </div>
+      <form onSubmit={handleSubmit} className="flex flex-col w-[352px] max-w-full h-full">
+        <div className="flex flex-col min-h-0 h-full">
+          {/* Fixed Header */}
+          <div className="content-stretch flex flex-col font-['Helvetica_Neue:Medium',sans-serif] gap-[8px] items-start not-italic relative shrink-0 w-full whitespace-pre-wrap mb-[28px]">
+            <p className="leading-[normal] relative shrink-0 text-[17px] text-black tracking-[-0.17px] w-full">
+              Current Medications
+            </p>
+            <p className="leading-[20px] relative shrink-0 text-[14px] text-neutral-400 tracking-[-0.42px] w-full">
+              Tracking your medications helps you see the full picture of your health management.
+            </p>
+          </div>
 
-              {/* Medications List */}
-              <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full max-w-[377px]">
-                <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[15px] text-black tracking-[0.15px] w-[min-content] whitespace-pre-wrap">
-                  Tabs
-                </p>
-                <div className="content-stretch flex flex-col gap-[33px] items-start relative shrink-0 w-full">
-                  {medications.map((medication, index) => (
-                    <div key={medication.id} className="relative content-stretch flex gap-[8px] items-center shrink-0 w-full max-w-[377px]">
-                      <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full">
-                        {/* Drug Name Dropdown */}
-                        <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[145px]">
-                          <div className="border border-[#ebebeb] border-solid box-border content-stretch flex items-center justify-between h-[40px] px-[13px] py-[7px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
+          {/* Scrollable Medications List */}
+          <div className="flex flex-col gap-[6px] items-start overflow-y-auto flex-1 min-h-0 w-full pr-2 mb-[28px]">
+            <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[15px] text-black tracking-[0.15px] w-[min-content] whitespace-pre-wrap">
+              Tabs
+            </p>
+            <div className="content-stretch flex flex-col gap-[33px] items-start relative shrink-0 w-full">
+              {medications.map((medication, index) => (
+                <div key={medication.id} className="relative content-stretch flex gap-[8px] items-center shrink-0 w-full">
+                  <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full">
+                    {/* Drug Name Dropdown */}
+                    <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[145px]">
+                      <div className="border border-[#ebebeb] border-solid box-border content-stretch flex items-center justify-between h-[40px] px-[13px] py-[7px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
                         <select
                           ref={(el) => { drugSelectRefs.current[medication.id] = el; }}
                           value={medication.name}
@@ -391,35 +400,35 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                             height={20}
                             className="object-contain rotate-180"
                           />
-                          </div>
                         </div>
-                        <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[12px] tracking-[-0.12px] w-full whitespace-pre-wrap">
-                          Drug name e.g Lisonopril
-                        </p>
                       </div>
+                      <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[12px] tracking-[-0.12px] w-full whitespace-pre-wrap">
+                        Drug name e.g Lisonopril
+                      </p>
+                    </div>
 
-                      {/* Dosage Input */}
-                      <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[113px]">
-                        <div className="border border-[#ebebeb] border-solid box-border content-stretch flex gap-[10px] h-[40px] items-center px-[16px] py-[11px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
-                          <input
-                            type="text"
-                            inputMode="numeric"
-                            value={medication.dosage}
-                            onChange={(e) => handleUpdateMedication(medication.id, 'dosage', e.target.value)}
-                            placeholder="100mg"
-                            disabled={isSaved && !isEditing}
-                            maxLength={4}
-                            className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[14px] tracking-[-0.14px] bg-transparent border-none outline-none w-full placeholder:text-[#7e7e7e] disabled:opacity-50 disabled:cursor-not-allowed"
-                          />
-                        </div>
-                        <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[12px] tracking-[-0.12px] w-full whitespace-pre-wrap">
-                          Dosage e.g 10mg
-                        </p>
+                    {/* Dosage Input */}
+                    <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[113px]">
+                      <div className="border border-[#ebebeb] border-solid box-border content-stretch flex gap-[10px] h-[40px] items-center px-[16px] py-[11px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={medication.dosage}
+                          onChange={(e) => handleUpdateMedication(medication.id, 'dosage', e.target.value)}
+                          placeholder="100mg"
+                          disabled={isSaved && !isEditing}
+                          maxLength={4}
+                          className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[14px] tracking-[-0.14px] bg-transparent border-none outline-none w-full placeholder:text-[#7e7e7e] disabled:opacity-50 disabled:cursor-not-allowed"
+                        />
                       </div>
+                      <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[12px] tracking-[-0.12px] w-full whitespace-pre-wrap">
+                        Dosage e.g 10mg
+                      </p>
+                    </div>
 
-                      {/* Frequency Dropdown */}
-                      <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[103px]">
-                        <div className="border border-[#ebebeb] border-solid box-border content-stretch flex items-center justify-between h-[40px] px-[8px] py-[10px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
+                    {/* Frequency Dropdown */}
+                    <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[103px]">
+                      <div className="border border-[#ebebeb] border-solid box-border content-stretch flex items-center justify-between h-[40px] px-[8px] py-[10px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
                         <select
                           ref={(el) => { frequencySelectRefs.current[medication.id] = el; }}
                           value={medication.frequency || ''}
@@ -448,38 +457,36 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                         Frequency
                       </p>
                     </div>
-                      </div>
-                      {/* Delete Icon - Only show on second and subsequent medications (never on first) */}
-                      {index > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveMedication(medication.id)}
-                          className="absolute left-[362px] top-[-19px] size-[16px] cursor-pointer hover:opacity-70 transition-opacity flex items-center justify-center"
-                          aria-label="Delete medication"
-                        >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-full h-full"
-                          >
-                            <path
-                              d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM7 19H17V6H7V19ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"
-                              fill="currentColor"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                  </div>
+                  {/* Delete Icon - Only show on second and subsequent medications (never on first) */}
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMedication(medication.id)}
+                      className="absolute left-[362px] top-[-19px] size-[16px] cursor-pointer hover:opacity-70 transition-opacity flex items-center justify-center"
+                      aria-label="Delete medication"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-full h-full"
+                      >
+                        <path
+                          d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM7 19H17V6H7V19ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </button>
+                  )}
                 </div>
-              </div>
+              ))}
             </div>
-
+            
             {/* Add Medication Button */}
-            <div className="box-border content-stretch flex gap-[8px] items-center relative shrink-0 w-full max-w-[377px]">
+            <div className="box-border content-stretch flex gap-[8px] items-center relative shrink-0 w-full mt-[28px] pb-2">
               <button
                 type="button"
                 onClick={handleAddMedication}
@@ -504,14 +511,14 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
         </div>
 
         {/* Fixed Bottom Section with Divider and Buttons */}
-        <div className="flex flex-col gap-[19px] items-end shrink-0 pt-[19px] mt-auto">
+        <div className="flex flex-col gap-[19px] items-end shrink-0 pt-[19px]">
           {/* Divider */}
-          <div className="h-0 w-[351px] relative">
+          <div className="h-0 w-full relative">
             <div className="absolute inset-0 border-t border-[#d1d1d1]"></div>
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-[16px] items-center">
+          <div className="flex gap-[16px] items-center w-full justify-end pr-2">
             {isSaved && !isEditing ? (
               <button
                 type="button"

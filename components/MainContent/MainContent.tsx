@@ -217,7 +217,7 @@ export default function MainContent({ activeMainTab = 'blood-pressure', allRecor
       {/* Main Content Card - Always visible */}
       <div className="absolute bg-white box-border content-stretch flex flex-col gap-[10px] h-[732px] items-start left-1/2 px-[75px] py-[42px] rounded-[8px] top-[42px] translate-x-[-50%] w-[872px]" data-node-id="15:1417">
         {activeMainTab === 'blood-pressure' && (
-          <div className="content-stretch flex flex-col gap-[70px] items-start relative shrink-0 w-full" data-node-id="26:2148">
+          <div className="flex flex-col gap-[70px] items-start relative min-h-0 h-full w-full" data-node-id="26:2148">
             {/* Records Header and Date Range Section */}
             <div className="content-stretch flex flex-col gap-[4px] items-start relative shrink-0 w-full" data-node-id="26:2147">
               <div className="content-stretch flex h-[113px] items-end justify-between relative shrink-0 w-full" data-node-id="15:1418">
@@ -245,7 +245,7 @@ export default function MainContent({ activeMainTab = 'blood-pressure', allRecor
             </div>
 
             {/* Blood Pressure Trends Section with Table */}
-            <div className="content-stretch flex flex-col gap-[22px] items-start relative shrink-0 w-[722px]" data-node-id="37:4000">
+            <div className="flex flex-col gap-[22px] items-start relative min-h-0 flex-1 w-[722px]" data-node-id="37:4000">
               {/* Trends Header */}
               <TrendsChart 
                 records={filteredRecords}
@@ -260,7 +260,9 @@ export default function MainContent({ activeMainTab = 'blood-pressure', allRecor
                   <p className="text-gray-500">Loading records...</p>
                 </div>
               ) : (
-                <BloodPressureLogTable records={filteredRecords} />
+                <div className="flex-1 min-h-0 w-full">
+                  <BloodPressureLogTable records={filteredRecords} />
+                </div>
               )}
             </div>
           </div>
