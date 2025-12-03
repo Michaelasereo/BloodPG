@@ -46,8 +46,8 @@ export default function BloodPressureLogTable({
   }
 
   return (
-    <div className="bg-neutral-50 border border-[#eaeaea] border-solid relative rounded-[12px] shrink-0 w-full">
-      <div className="content-stretch flex items-start overflow-clip relative rounded-[inherit] w-full">
+    <div className="bg-neutral-50 border border-[#eaeaea] border-solid relative rounded-[12px] shrink-0 w-full max-h-[600px] overflow-hidden flex flex-col">
+      <div className="content-stretch flex items-start overflow-y-auto overflow-x-clip relative rounded-[inherit] w-full flex-1">
         {/* S/N Column */}
         <div className="content-stretch flex flex-col items-start relative shrink-0 w-[73px]">
           <div className="bg-[#ededed] border-[#bcbcbc] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[60px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full">

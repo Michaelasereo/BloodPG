@@ -83,8 +83,9 @@ export default function RecordsEntry({ selectedDate, allRecords, recordsLoaded }
     }
   }, [allRecords]);
 
-  // Show loading only on initial app load, not when clicking the tab
-  if (!recordsLoaded) {
+  // Show loading only on initial app load when user is signed in, not when clicking the tab
+  // If user is signed out, show empty state (recordsLoaded will be true but allRecords will be empty)
+  if (!recordsLoaded && user) {
     return (
       <div className="flex items-center justify-center h-[400px] w-full">
         <p className="text-gray-500">Loading records...</p>

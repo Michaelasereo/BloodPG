@@ -342,28 +342,28 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
         medications={savedMedications}
         onSetAsDefault={handleSetAsDefault}
       />
-      <form onSubmit={handleSubmit} className="flex flex-col gap-[19px] items-end justify-center w-[352px] max-w-full">
-      <div className="content-stretch flex flex-col gap-[92px] items-start relative shrink-0 w-full">
-        <div className="box-border content-stretch flex flex-col items-start pb-[4px] pt-0 px-0 relative shrink-0 w-full">
-          <div className="box-border content-stretch flex flex-col gap-[27px] items-start mb-[-4px] relative shrink-0 w-full">
-            <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0 w-full max-w-[377px]">
-              {/* Current Medications Header */}
-              <div className="content-stretch flex flex-col font-['Helvetica_Neue:Medium',sans-serif] gap-[8px] items-start not-italic relative shrink-0 w-full whitespace-pre-wrap">
-                <p className="leading-[normal] relative shrink-0 text-[17px] text-black tracking-[-0.17px] w-full">
-                  Current Medications
-                </p>
-                <p className="leading-[20px] relative shrink-0 text-[14px] text-neutral-400 tracking-[-0.42px] w-full">
-                  Tracking your medications helps you see the full picture of your health management.
-                </p>
-              </div>
+      <form onSubmit={handleSubmit} className="flex flex-col w-[352px] max-w-full">
+      <div className="flex flex-col min-h-0 w-full">
+        {/* Scrollable Content Area */}
+        <div className="flex flex-col gap-[28px] items-start overflow-y-auto max-h-[480px] min-h-0 pr-2">
+          <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0 w-full max-w-[377px]">
+            {/* Current Medications Header */}
+            <div className="content-stretch flex flex-col font-['Helvetica_Neue:Medium',sans-serif] gap-[8px] items-start not-italic relative shrink-0 w-full whitespace-pre-wrap">
+              <p className="leading-[normal] relative shrink-0 text-[17px] text-black tracking-[-0.17px] w-full">
+                Current Medications
+              </p>
+              <p className="leading-[20px] relative shrink-0 text-[14px] text-neutral-400 tracking-[-0.42px] w-full">
+                Tracking your medications helps you see the full picture of your health management.
+              </p>
+            </div>
 
-              {/* Medications List */}
-              <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full max-w-[377px]">
-                <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[15px] text-black tracking-[0.15px] w-[min-content] whitespace-pre-wrap">
-                  Tabs
-                </p>
-                <div className="content-stretch flex flex-col gap-[33px] items-start relative shrink-0 w-full">
-                  {medications.map((medication, index) => (
+            {/* Medications List */}
+            <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full max-w-[377px]">
+              <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[15px] text-black tracking-[0.15px] w-[min-content] whitespace-pre-wrap">
+                Tabs
+              </p>
+              <div className="content-stretch flex flex-col gap-[33px] items-start relative shrink-0 w-full">
+                {medications.map((medication, index) => (
                     <div key={medication.id} className="relative content-stretch flex gap-[8px] items-center shrink-0 w-full max-w-[377px]">
                     <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full">
                       {/* Drug Name Dropdown */}
@@ -501,66 +501,68 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
               </button>
             </div>
           </div>
-
         </div>
-      </div>
 
-      {/* Divider */}
-      <div className="h-0 w-[351px] relative">
-        <div className="absolute inset-0 border-t border-[#d1d1d1]"></div>
-      </div>
+        {/* Fixed Bottom Section with Divider and Buttons */}
+        <div className="flex flex-col gap-[19px] items-end shrink-0 pt-[19px] mt-auto">
+          {/* Divider */}
+          <div className="h-0 w-[351px] relative">
+            <div className="absolute inset-0 border-t border-[#d1d1d1]"></div>
+          </div>
 
-      {/* Buttons */}
-      <div className="flex gap-[16px] items-center">
-        {isSaved && !isEditing ? (
-          <button
-            type="button"
-            onClick={() => {
-              // Store current values as original before editing
-              setOriginalMedications([...medications]);
-              setIsSaved(false);
-              setIsEditing(true);
-            }}
-            className="bg-[#212121] box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[11px] py-[6px] relative rounded-[20px] shrink-0 w-[148px]"
-          >
-            <div className="content-stretch flex gap-[3px] items-center relative shrink-0">
-              <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[12px] text-white tracking-[-0.12px]">
-                Edit
-              </p>
-            </div>
-          </button>
-        ) : (
-          <>
-            <button
-              type="button"
-              onClick={() => {
-                // Restore original values
-                if (originalMedications) {
-                  setMedications([...originalMedications]);
-                }
-                setIsEditing(false);
-                setIsSaved(true);
-                onCancel();
-              }}
-              className="border border-black border-solid box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[13px] py-[10px] relative rounded-[20px] shrink-0 w-[92px]"
-            >
-              <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#1d1d1d] text-[12px] tracking-[-0.12px]">
-                Cancel
-              </p>
-            </button>
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="bg-[#212121] box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[11px] py-[6px] relative rounded-[20px] shrink-0 w-[148px] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <div className="content-stretch flex gap-[3px] items-center relative shrink-0">
-                <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[12px] text-white tracking-[-0.12px]">
-                  {isSaving ? 'Saving...' : 'Save'}
-                </p>
-              </div>
-            </button>
-          </>
-        )}
+          {/* Buttons */}
+          <div className="flex gap-[16px] items-center">
+            {isSaved && !isEditing ? (
+              <button
+                type="button"
+                onClick={() => {
+                  // Store current values as original before editing
+                  setOriginalMedications([...medications]);
+                  setIsSaved(false);
+                  setIsEditing(true);
+                }}
+                className="bg-[#212121] box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[11px] py-[6px] relative rounded-[20px] shrink-0 w-[148px]"
+              >
+                <div className="content-stretch flex gap-[3px] items-center relative shrink-0">
+                  <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[12px] text-white tracking-[-0.12px]">
+                    Edit
+                  </p>
+                </div>
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Restore original values
+                    if (originalMedications) {
+                      setMedications([...originalMedications]);
+                    }
+                    setIsEditing(false);
+                    setIsSaved(true);
+                    onCancel();
+                  }}
+                  className="border border-black border-solid box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[13px] py-[10px] relative rounded-[20px] shrink-0 w-[92px]"
+                >
+                  <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#1d1d1d] text-[12px] tracking-[-0.12px]">
+                    Cancel
+                  </p>
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="bg-[#212121] box-border content-stretch flex gap-[10px] h-[35px] items-center justify-center px-[11px] py-[6px] relative rounded-[20px] shrink-0 w-[148px] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <div className="content-stretch flex gap-[3px] items-center relative shrink-0">
+                    <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[12px] text-white tracking-[-0.12px]">
+                      {isSaving ? 'Saving...' : 'Save'}
+                    </p>
+                  </div>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </form>
     </>

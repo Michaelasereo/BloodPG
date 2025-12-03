@@ -255,7 +255,7 @@ export default function MainContent({ activeMainTab = 'blood-pressure', allRecor
               />
 
               {/* Table Section - Instant loading with preloaded records */}
-              {!recordsLoaded ? (
+              {!recordsLoaded && user ? (
                 <div className="flex items-center justify-center h-[400px] w-full">
                   <p className="text-gray-500">Loading records...</p>
                 </div>

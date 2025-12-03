@@ -26,17 +26,22 @@ export default function Home() {
   // Clear all data when user signs out
   useEffect(() => {
     if (!user) {
-      // User signed out - clear all data
+      // User signed out - clear all data immediately and set loaded to true to show empty state
       setAllRecords([]);
       setMedicationsMap(new Map());
-      setRecordsLoaded(false);
-      setMedicationsLoaded(false);
+      setRecordsLoaded(true); // Set to true so empty state shows, not loading
+      setMedicationsLoaded(true); // Set to true so empty state shows
       console.log('🧹 Cleared all data on sign out');
     }
   }, [user]);
 
-  // Pre-load records when app starts (background loading)
+  // Pre-load records when app starts (background loading) - only if user is signed in
   useEffect(() => {
+    // Don't load records if user is not signed in
+    if (!user) {
+      return;
+    }
+
     const loadRecordsOnStart = async () => {
       try {
         const records = await getAllBloodPressureRecords();
@@ -61,10 +66,15 @@ export default function Home() {
     return () => {
       window.removeEventListener('bloodpg:record-saved', handleRecordSaved);
     };
-  }, []);
+  }, [user]); // Add user dependency to reload when user signs in
 
-  // Pre-load medications for all records when records are loaded
+  // Pre-load medications for all records when records are loaded - only if user is signed in
   useEffect(() => {
+    // Don't load medications if user is not signed in
+    if (!user) {
+      return;
+    }
+
     const loadMedicationsOnStart = async () => {
       if (!recordsLoaded || allRecords.length === 0) {
         return;

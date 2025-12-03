@@ -157,11 +157,19 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
           const savedRecord = await saveBloodPressureRecordUnified(record);
           
           if (savedRecord) {
-            // Notify other components to refresh
+            // Clear pending data first
+            setPendingSaveData(null);
+            
+            // Notify other components to refresh records
             window.dispatchEvent(new CustomEvent('bloodpg:record-saved'));
-            setPendingSaveData(null); // Clear pending data after successful save
-            // Notify BloodPressureEntry to update its state (go to disabled/saved state)
-            window.dispatchEvent(new CustomEvent('bloodpg:save-success'));
+            
+            // Wait a bit for records to refresh, then notify BloodPressureEntry
+            // This ensures the new data is loaded before BloodPressureEntry reloads
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent('bloodpg:save-success', { 
+                detail: { date: selectedDate } 
+              }));
+            }, 300);
           } else {
             alert('Failed to save record. Please try again.');
           }

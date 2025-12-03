@@ -203,6 +203,58 @@ export default function BloodPressureEntry({
     }
   }, [formData, isEditing, onFormDataChange]);
 
+  // Listen for save-success to update form state (for auto-save after sign-in)
+  useEffect(() => {
+    const handleSaveSuccess = (event: CustomEvent) => {
+      const normalizeDate = (date: Date): string => {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        return d.toISOString().split('T')[0];
+      };
+
+      const selectedDateStr = normalizeDate(selectedDate);
+      const savedDate = event.detail?.date ? normalizeDate(event.detail.date) : null;
+      
+      // Only handle if this is for the current selected date
+      if (savedDate && savedDate === selectedDateStr) {
+        // Wait a bit for records to refresh, then reload
+        setTimeout(() => {
+          const existingRecord = allRecords.find(record => {
+            const recordDate = new Date(record.date);
+            const recordDateStr = normalizeDate(recordDate);
+            return recordDateStr === selectedDateStr;
+          });
+
+          if (existingRecord) {
+            const loadedData = {
+              am: {
+                systolic: existingRecord.am.systolic.toString(),
+                diastolic: existingRecord.am.diastolic.toString(),
+                preMedication: existingRecord.am.preMedication,
+                postMedication: existingRecord.am.postMedication,
+              },
+              pm: {
+                systolic: existingRecord.pm.systolic.toString(),
+                diastolic: existingRecord.pm.diastolic.toString(),
+                preMedication: existingRecord.pm.preMedication,
+                postMedication: existingRecord.pm.postMedication,
+              },
+            };
+            setFormData(loadedData);
+            setOriginalFormData(loadedData);
+            setIsSaved(true);
+            setIsEditing(false);
+          }
+        }, 500); // Wait for records to refresh
+      }
+    };
+
+    window.addEventListener('bloodpg:save-success', handleSaveSuccess as EventListener);
+    return () => {
+      window.removeEventListener('bloodpg:save-success', handleSaveSuccess as EventListener);
+    };
+  }, [selectedDate, allRecords]);
+
   // Listen for record updates to refresh form if current date's record was updated
   useEffect(() => {
     // Don't reload if user is currently editing
@@ -211,40 +263,43 @@ export default function BloodPressureEntry({
     }
 
     const handleRecordSaved = () => {
-      // Normalize dates for comparison
-      const normalizeDate = (date: Date): string => {
-        const d = new Date(date);
-        d.setHours(0, 0, 0, 0);
-        return d.toISOString().split('T')[0];
-      };
-
-      const selectedDateStr = normalizeDate(selectedDate);
-      const existingRecord = allRecords.find(record => {
-        const recordDate = new Date(record.date);
-        const recordDateStr = normalizeDate(recordDate);
-        return recordDateStr === selectedDateStr;
-      });
-
-      if (existingRecord) {
-        const loadedData = {
-          am: {
-            systolic: existingRecord.am.systolic.toString(),
-            diastolic: existingRecord.am.diastolic.toString(),
-            preMedication: existingRecord.am.preMedication,
-            postMedication: existingRecord.am.postMedication,
-          },
-          pm: {
-            systolic: existingRecord.pm.systolic.toString(),
-            diastolic: existingRecord.pm.diastolic.toString(),
-            preMedication: existingRecord.pm.preMedication,
-            postMedication: existingRecord.pm.postMedication,
-          },
+      // Wait a bit to ensure records have refreshed
+      setTimeout(() => {
+        // Normalize dates for comparison
+        const normalizeDate = (date: Date): string => {
+          const d = new Date(date);
+          d.setHours(0, 0, 0, 0);
+          return d.toISOString().split('T')[0];
         };
-        setFormData(loadedData);
-        setOriginalFormData(loadedData);
-        setIsSaved(true);
-        setIsEditing(false);
-      }
+
+        const selectedDateStr = normalizeDate(selectedDate);
+        const existingRecord = allRecords.find(record => {
+          const recordDate = new Date(record.date);
+          const recordDateStr = normalizeDate(recordDate);
+          return recordDateStr === selectedDateStr;
+        });
+
+        if (existingRecord) {
+          const loadedData = {
+            am: {
+              systolic: existingRecord.am.systolic.toString(),
+              diastolic: existingRecord.am.diastolic.toString(),
+              preMedication: existingRecord.am.preMedication,
+              postMedication: existingRecord.am.postMedication,
+            },
+            pm: {
+              systolic: existingRecord.pm.systolic.toString(),
+              diastolic: existingRecord.pm.diastolic.toString(),
+              preMedication: existingRecord.pm.preMedication,
+              postMedication: existingRecord.pm.postMedication,
+            },
+          };
+          setFormData(loadedData);
+          setOriginalFormData(loadedData);
+          setIsSaved(true);
+          setIsEditing(false);
+        }
+      }, 300); // Small delay to ensure records have refreshed
     };
 
     window.addEventListener('bloodpg:record-saved', handleRecordSaved);
