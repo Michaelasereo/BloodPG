@@ -350,25 +350,25 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
               {/* Current Medications Header */}
               <div className="content-stretch flex flex-col font-['Helvetica_Neue:Medium',sans-serif] gap-[8px] items-start not-italic relative shrink-0 w-full whitespace-pre-wrap">
                 <p className="leading-[normal] relative shrink-0 text-[17px] text-black tracking-[-0.17px] w-full">
-                Current Medications
-              </p>
-              <p className="leading-[20px] relative shrink-0 text-[14px] text-neutral-400 tracking-[-0.42px] w-full">
-                Tracking your medications helps you see the full picture of your health management.
-              </p>
-            </div>
+                  Current Medications
+                </p>
+                <p className="leading-[20px] relative shrink-0 text-[14px] text-neutral-400 tracking-[-0.42px] w-full">
+                  Tracking your medications helps you see the full picture of your health management.
+                </p>
+              </div>
 
               {/* Medications List */}
               <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full max-w-[377px]">
-              <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[15px] text-black tracking-[0.15px] w-[min-content] whitespace-pre-wrap">
-                Tabs
-              </p>
-              <div className="content-stretch flex flex-col gap-[33px] items-start relative shrink-0 w-full">
-                {medications.map((medication, index) => (
+                <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[15px] text-black tracking-[0.15px] w-[min-content] whitespace-pre-wrap">
+                  Tabs
+                </p>
+                <div className="content-stretch flex flex-col gap-[33px] items-start relative shrink-0 w-full">
+                  {medications.map((medication, index) => (
                     <div key={medication.id} className="relative content-stretch flex gap-[8px] items-center shrink-0 w-full max-w-[377px]">
-                    <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full">
-                      {/* Drug Name Dropdown */}
-                      <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[145px]">
-                      <div className="border border-[#ebebeb] border-solid box-border content-stretch flex items-center justify-between h-[40px] px-[13px] py-[7px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
+                      <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full">
+                        {/* Drug Name Dropdown */}
+                        <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[145px]">
+                          <div className="border border-[#ebebeb] border-solid box-border content-stretch flex items-center justify-between h-[40px] px-[13px] py-[7px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
                         <select
                           ref={(el) => { drugSelectRefs.current[medication.id] = el; }}
                           value={medication.name}
@@ -391,35 +391,35 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                             height={20}
                             className="object-contain rotate-180"
                           />
+                          </div>
                         </div>
+                        <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[12px] tracking-[-0.12px] w-full whitespace-pre-wrap">
+                          Drug name e.g Lisonopril
+                        </p>
                       </div>
-                      <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[12px] tracking-[-0.12px] w-full whitespace-pre-wrap">
-                        Drug name e.g Lisonopril
-                      </p>
-                    </div>
 
-                    {/* Dosage Input */}
-                    <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[113px]">
-                      <div className="border border-[#ebebeb] border-solid box-border content-stretch flex gap-[10px] h-[40px] items-center px-[16px] py-[11px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          value={medication.dosage}
-                          onChange={(e) => handleUpdateMedication(medication.id, 'dosage', e.target.value)}
-                          placeholder="100mg"
-                          disabled={isSaved && !isEditing}
-                          maxLength={4}
-                          className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[14px] tracking-[-0.14px] bg-transparent border-none outline-none w-full placeholder:text-[#7e7e7e] disabled:opacity-50 disabled:cursor-not-allowed"
-                        />
+                      {/* Dosage Input */}
+                      <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[113px]">
+                        <div className="border border-[#ebebeb] border-solid box-border content-stretch flex gap-[10px] h-[40px] items-center px-[16px] py-[11px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            value={medication.dosage}
+                            onChange={(e) => handleUpdateMedication(medication.id, 'dosage', e.target.value)}
+                            placeholder="100mg"
+                            disabled={isSaved && !isEditing}
+                            maxLength={4}
+                            className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[14px] tracking-[-0.14px] bg-transparent border-none outline-none w-full placeholder:text-[#7e7e7e] disabled:opacity-50 disabled:cursor-not-allowed"
+                          />
+                        </div>
+                        <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[12px] tracking-[-0.12px] w-full whitespace-pre-wrap">
+                          Dosage e.g 10mg
+                        </p>
                       </div>
-                      <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#7e7e7e] text-[12px] tracking-[-0.12px] w-full whitespace-pre-wrap">
-                        Dosage e.g 10mg
-                      </p>
-                    </div>
 
-                    {/* Frequency Dropdown */}
-                    <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[103px]">
-                      <div className="border border-[#ebebeb] border-solid box-border content-stretch flex items-center justify-between h-[40px] px-[8px] py-[10px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
+                      {/* Frequency Dropdown */}
+                      <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[103px]">
+                        <div className="border border-[#ebebeb] border-solid box-border content-stretch flex items-center justify-between h-[40px] px-[8px] py-[10px] relative rounded-[10px] shrink-0 w-full focus-within:border-black">
                         <select
                           ref={(el) => { frequencySelectRefs.current[medication.id] = el; }}
                           value={medication.frequency || ''}
@@ -448,7 +448,7 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                         Frequency
                       </p>
                     </div>
-                    </div>
+                      </div>
                       {/* Delete Icon - Only show on second and subsequent medications (never on first) */}
                       {index > 0 && (
                         <button
@@ -478,8 +478,8 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
               </div>
             </div>
 
-              {/* Add Medication Button */}
-              <div className="box-border content-stretch flex gap-[8px] items-center relative shrink-0 w-full max-w-[377px]">
+            {/* Add Medication Button */}
+            <div className="box-border content-stretch flex gap-[8px] items-center relative shrink-0 w-full max-w-[377px]">
               <button
                 type="button"
                 onClick={handleAddMedication}
@@ -499,20 +499,20 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                   Add medication
                 </p>
               </button>
-              </div>
             </div>
           </div>
+        </div>
 
-          {/* Fixed Bottom Section with Divider and Buttons */}
-          <div className="flex flex-col gap-[19px] items-end shrink-0 pt-[19px] mt-auto">
-            {/* Divider */}
-            <div className="h-0 w-[351px] relative">
-              <div className="absolute inset-0 border-t border-[#d1d1d1]"></div>
-            </div>
+        {/* Fixed Bottom Section with Divider and Buttons */}
+        <div className="flex flex-col gap-[19px] items-end shrink-0 pt-[19px] mt-auto">
+          {/* Divider */}
+          <div className="h-0 w-[351px] relative">
+            <div className="absolute inset-0 border-t border-[#d1d1d1]"></div>
+          </div>
 
-            {/* Buttons */}
-            <div className="flex gap-[16px] items-center">
-              {isSaved && !isEditing ? (
+          {/* Buttons */}
+          <div className="flex gap-[16px] items-center">
+            {isSaved && !isEditing ? (
               <button
                 type="button"
                 onClick={() => {
@@ -561,7 +561,6 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                 </button>
               </>
             )}
-            </div>
           </div>
         </div>
       </form>
