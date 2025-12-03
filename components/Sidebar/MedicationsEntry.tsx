@@ -343,13 +343,13 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
         onSetAsDefault={handleSetAsDefault}
       />
       <form onSubmit={handleSubmit} className="flex flex-col w-[352px] max-w-full">
-      <div className="flex flex-col min-h-0 w-full">
-        {/* Scrollable Content Area */}
-        <div className="flex flex-col gap-[28px] items-start overflow-y-auto max-h-[480px] min-h-0 pr-2">
-          <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0 w-full max-w-[377px]">
-            {/* Current Medications Header */}
-            <div className="content-stretch flex flex-col font-['Helvetica_Neue:Medium',sans-serif] gap-[8px] items-start not-italic relative shrink-0 w-full whitespace-pre-wrap">
-              <p className="leading-[normal] relative shrink-0 text-[17px] text-black tracking-[-0.17px] w-full">
+        <div className="flex flex-col min-h-0 w-full">
+          {/* Scrollable Content Area */}
+          <div className="flex flex-col gap-[28px] items-start overflow-y-auto max-h-[480px] min-h-0 pr-2">
+            <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0 w-full max-w-[377px]">
+              {/* Current Medications Header */}
+              <div className="content-stretch flex flex-col font-['Helvetica_Neue:Medium',sans-serif] gap-[8px] items-start not-italic relative shrink-0 w-full whitespace-pre-wrap">
+                <p className="leading-[normal] relative shrink-0 text-[17px] text-black tracking-[-0.17px] w-full">
                 Current Medications
               </p>
               <p className="leading-[20px] relative shrink-0 text-[14px] text-neutral-400 tracking-[-0.42px] w-full">
@@ -357,8 +357,8 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
               </p>
             </div>
 
-            {/* Medications List */}
-            <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full max-w-[377px]">
+              {/* Medications List */}
+              <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full max-w-[377px]">
               <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[15px] text-black tracking-[0.15px] w-[min-content] whitespace-pre-wrap">
                 Tabs
               </p>
@@ -478,8 +478,8 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
               </div>
             </div>
 
-            {/* Add Medication Button */}
-            <div className="box-border content-stretch flex gap-[8px] items-center relative shrink-0 w-full max-w-[377px]">
+              {/* Add Medication Button */}
+              <div className="box-border content-stretch flex gap-[8px] items-center relative shrink-0 w-full max-w-[377px]">
               <button
                 type="button"
                 onClick={handleAddMedication}
@@ -499,20 +499,20 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                   Add medication
                 </p>
               </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Fixed Bottom Section with Divider and Buttons */}
-        <div className="flex flex-col gap-[19px] items-end shrink-0 pt-[19px] mt-auto">
-          {/* Divider */}
-          <div className="h-0 w-[351px] relative">
-            <div className="absolute inset-0 border-t border-[#d1d1d1]"></div>
-          </div>
+          {/* Fixed Bottom Section with Divider and Buttons */}
+          <div className="flex flex-col gap-[19px] items-end shrink-0 pt-[19px] mt-auto">
+            {/* Divider */}
+            <div className="h-0 w-[351px] relative">
+              <div className="absolute inset-0 border-t border-[#d1d1d1]"></div>
+            </div>
 
-          {/* Buttons */}
-          <div className="flex gap-[16px] items-center">
-            {isSaved && !isEditing ? (
+            {/* Buttons */}
+            <div className="flex gap-[16px] items-center">
+              {isSaved && !isEditing ? (
               <button
                 type="button"
                 onClick={() => {
@@ -561,10 +561,10 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
                 </button>
               </>
             )}
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
     </>
   );
 }
