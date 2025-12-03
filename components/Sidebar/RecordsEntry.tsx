@@ -196,28 +196,20 @@ export default function RecordsEntry({ selectedDate, allRecords, recordsLoaded }
                       Current Medications
                     </p>
                   </div>
-                  <div className="box-border content-stretch flex gap-[13px] items-center px-[12px] py-[6px] relative rounded-bl-[8px] rounded-br-[8px] shrink-0 w-full">
+                  <div className="box-border content-stretch flex flex-col gap-[8px] items-start px-[12px] py-[6px] relative rounded-bl-[8px] rounded-br-[8px] shrink-0 w-full">
                     {record.medications && record.medications.length > 0 ? (
                       record.medications.map((medication, medIndex) => {
                         // Format medication: ensure "Tabs" prefix and "mg" in dosage
                         let formattedMed = formatMedicationWithDosage(medication);
                         formattedMed = formattedMed.startsWith('Tabs') ? formattedMed : `Tabs ${formattedMed}`;
                         return (
-                          <div key={medIndex} className="flex items-center gap-[13px]">
+                          <div key={medIndex} className="flex flex-col w-full">
                             {medIndex > 0 && (
-                              <div className="h-[25px] relative shrink-0 w-0">
-                                <div className="absolute bottom-0 left-[-0.5px] right-[-0.5px] top-0">
-                                  <Image
-                                    src="/Vector 22.svg"
-                                    alt="Divider"
-                                    width={1}
-                                    height={25}
-                                    className="object-contain"
-                                  />
-                                </div>
+                              <div className="h-0 relative shrink-0 w-full mb-[8px]">
+                                <div className="absolute bottom-0 left-0 right-0 top-0 border-t border-[#d1d1d1]"></div>
                               </div>
                             )}
-                            <div className="flex items-center gap-[4px]">
+                            <div className="flex items-center gap-[4px] min-w-0">
                               <div className="relative shrink-0 size-[12px]">
                                 <Image
                                   src="/mdi_drugs.svg"
@@ -227,8 +219,8 @@ export default function RecordsEntry({ selectedDate, allRecords, recordsLoaded }
                                   className="object-contain"
                                 />
                               </div>
-                              <p className="font-['Helvetica_Neue:Italic',sans-serif] leading-[normal] not-italic relative shrink-0 text-[12px] text-black tracking-[-0.36px]">
-                                {formattedMed}
+                              <p className="font-['Helvetica_Neue:Italic',sans-serif] leading-[normal] not-italic relative shrink-0 text-[12px] text-black tracking-[-0.36px] truncate max-w-[300px]" title={formattedMed}>
+                                -{formattedMed}
                               </p>
                             </div>
                           </div>

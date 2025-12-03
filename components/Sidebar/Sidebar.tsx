@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import BloodPressureEntry from './BloodPressureEntry';
 import MedicationsEntry from './MedicationsEntry';
@@ -75,6 +75,8 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
 
   const [saving, setSaving] = useState(false);
   const [pendingSaveData, setPendingSaveData] = useState<BloodPressureFormData | null>(null);
+  const bpFormDataRef = useRef<BloodPressureFormData | null>(null);
+  const bpIsEditingRef = useRef<boolean>(false);
 
   const handleSaveBP = async (data: BloodPressureFormData): Promise<boolean> => {
     // Check if user is authenticated
@@ -230,43 +232,73 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
         return false;
       }
 
+      // Get existing medications for this record to check if we're editing
+      const existingMedsForRecord = medicationsMap.has(todayRecord.id) 
+        ? medicationsMap.get(todayRecord.id)! 
+        : [];
+      
       // Save each medication and link to record
       const medicationStrings: string[] = [];
+      const medicationIdsToLink: number[] = [];
       
       for (const med of validMedications) {
-        // Check if medication already exists for this user
-        const { data: existingMed } = await supabase
-          .from('medications')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('name', med.name)
-          .eq('dosage', med.dosage || '')
-          .eq('frequency', med.frequency || '')
-          .single();
-
+        // Check if medication with same name exists for this record (editing scenario)
+        const existingMedForRecord = existingMedsForRecord.find(m => 
+          m.name.trim().toLowerCase() === med.name.trim().toLowerCase()
+        );
+        
         let medicationId: number;
         
-        if (existingMed) {
-          medicationId = existingMed.id;
-        } else {
-          // Create new medication
-          const { data: newMed, error: medError } = await supabase
+        if (existingMedForRecord) {
+          // Updating existing medication - update the medication record
+          medicationId = existingMedForRecord.id;
+          const { error: updateError } = await supabase
             .from('medications')
-            .insert([{
-              user_id: user.id,
-              name: med.name,
+            .update({
               dosage: med.dosage || '',
               frequency: med.frequency || ''
-            }])
-            .select()
-            .single();
-
-          if (medError || !newMed) {
-            console.error('Error saving medication:', medError);
+            })
+            .eq('id', medicationId);
+          
+          if (updateError) {
+            console.error('Error updating medication:', updateError);
             continue;
           }
-          medicationId = newMed.id;
+        } else {
+          // Check if medication already exists for this user with exact match
+          const { data: existingMed } = await supabase
+            .from('medications')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('name', med.name)
+            .eq('dosage', med.dosage || '')
+            .eq('frequency', med.frequency || '')
+            .maybeSingle();
+
+          if (existingMed) {
+            medicationId = existingMed.id;
+          } else {
+            // Create new medication
+            const { data: newMed, error: medError } = await supabase
+              .from('medications')
+              .insert([{
+                user_id: user.id,
+                name: med.name,
+                dosage: med.dosage || '',
+                frequency: med.frequency || ''
+              }])
+              .select()
+              .single();
+
+            if (medError || !newMed) {
+              console.error('Error saving medication:', medError);
+              continue;
+            }
+            medicationId = newMed.id;
+          }
         }
+
+        medicationIdsToLink.push(medicationId);
 
         // Link medication to record
         const { error: linkError } = await supabase
@@ -302,6 +334,22 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
         }
       }
 
+      // Remove medications that were deleted (exist in record but not in new list)
+      if (existingMedsForRecord.length > 0) {
+        const newMedNames = validMedications.map(m => m.name.trim().toLowerCase());
+        const medsToRemove = existingMedsForRecord.filter(m => 
+          !newMedNames.includes(m.name.trim().toLowerCase())
+        );
+        
+        for (const medToRemove of medsToRemove) {
+          await supabase
+            .from('record_medications')
+            .delete()
+            .eq('record_id', todayRecord.id)
+            .eq('medication_id', medToRemove.id);
+        }
+      }
+
       // Update the record with medications array (for backward compatibility)
       const updatedRecord = {
         ...todayRecord,
@@ -324,6 +372,49 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
   const handleCancel = () => {
     console.log('Cancel action');
   };
+
+  // Auto-save BP data when switching tabs
+  const handleTabChange = useCallback(async (newTab: SidebarTab) => {
+    // If switching away from 'enter' tab and there's unsaved BP data, auto-save it
+    if (activeTab === 'enter' && newTab !== 'enter' && bpFormDataRef.current && bpIsEditingRef.current && user) {
+      const formData = bpFormDataRef.current;
+      
+      // Check if there's any data to save
+      const hasData = (formData.am.systolic && formData.am.diastolic) || 
+                     (formData.pm.systolic && formData.pm.diastolic);
+      
+      if (hasData) {
+        // Auto-save before switching tabs
+        try {
+          const record = {
+            date: selectedDate,
+            am: {
+              systolic: parseInt(formData.am.systolic) || 0,
+              diastolic: parseInt(formData.am.diastolic) || 0,
+              preMedication: formData.am.preMedication,
+              postMedication: formData.am.postMedication,
+            },
+            pm: {
+              systolic: parseInt(formData.pm.systolic) || 0,
+              diastolic: parseInt(formData.pm.diastolic) || 0,
+              preMedication: formData.pm.preMedication,
+              postMedication: formData.pm.postMedication,
+            },
+            medications: [],
+          };
+          
+          await saveBloodPressureRecordUnified(record);
+          window.dispatchEvent(new CustomEvent('bloodpg:record-saved'));
+          window.dispatchEvent(new CustomEvent('bloodpg:save-success'));
+        } catch (error) {
+          console.error('Error auto-saving BP data on tab switch:', error);
+        }
+      }
+    }
+    
+    // Switch tab after auto-save (or immediately if no save needed)
+    setActiveTab(newTab);
+  }, [activeTab, user, selectedDate]);
 
   return (
     <>
@@ -365,7 +456,7 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
                   <div className="absolute content-stretch flex gap-[25px] h-[34px] items-start left-0 top-[66px] w-[371.527px]">
                     <div className={`content-stretch flex flex-col gap-[18px] items-start relative shrink-0 w-[130px]`}>
                       <button
-                        onClick={() => setActiveTab('enter')}
+                        onClick={() => handleTabChange('enter')}
                         className="content-stretch flex gap-[4px] items-end relative shrink-0 w-full"
                       >
                         <div className={`relative shrink-0 size-[16px] ${
@@ -399,7 +490,7 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
                       activeTab === 'medications' ? 'w-[100px]' : ''
                     }`}>
                       <button
-                        onClick={() => setActiveTab('medications')}
+                        onClick={() => handleTabChange('medications')}
                         className="content-stretch flex items-end relative shrink-0 w-full"
                       >
                         <div className={`relative shrink-0 size-[16px] ${
@@ -431,7 +522,7 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
                       activeTab === 'records' ? 'w-[70px]' : ''
                     }`}>
                       <button
-                        onClick={() => setActiveTab('records')}
+                        onClick={() => handleTabChange('records')}
                         className="content-stretch flex gap-[4px] items-end relative shrink-0 w-full"
                       >
                         <div className={`relative shrink-0 size-[16px] ${
@@ -531,6 +622,10 @@ export default function Sidebar({ activeMainTab, allRecords, recordsLoaded, medi
                     allRecords={allRecords}
                     onSave={handleSaveBP}
                     onCancel={handleCancel}
+                    onFormDataChange={(data, isEditing) => {
+                      bpFormDataRef.current = data;
+                      bpIsEditingRef.current = isEditing;
+                    }}
                   />
                 )}
                 {activeTab === 'medications' && (

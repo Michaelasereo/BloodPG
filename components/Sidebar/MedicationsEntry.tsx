@@ -246,6 +246,14 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
       return;
     }
 
+    // Check for duplicate drug names in the valid medications list
+    const drugNames = validMedications.map(m => m.name.trim().toLowerCase());
+    const uniqueDrugNames = new Set(drugNames);
+    if (drugNames.length !== uniqueDrugNames.size) {
+      alert('Cannot have duplicate drug names. Please ensure each medication has a unique drug name.');
+      return;
+    }
+
     setIsSaving(true);
     try {
       const success = await onSave(validMedications);
@@ -287,6 +295,15 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
     ]);
   };
 
+  const checkDuplicateDrugName = (drugName: string, excludeId?: string): boolean => {
+    if (!drugName || drugName.trim() === '') return false;
+    const trimmedName = drugName.trim().toLowerCase();
+    return medications.some(med => 
+      med.id !== excludeId && 
+      med.name.trim().toLowerCase() === trimmedName
+    );
+  };
+
   const handleUpdateMedication = (id: string, field: 'name' | 'dosage' | 'frequency', value: string) => {
     if (field === 'dosage') {
       // Validate dosage: max 4 digits, no decimals
@@ -296,6 +313,15 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
       }
       setMedications(medications.map(med =>
         med.id === id ? { ...med, [field]: cleaned } : med
+      ));
+    } else if (field === 'name') {
+      // Check for duplicate drug names
+      if (checkDuplicateDrugName(value, id)) {
+        alert('This drug name is already added. Please choose a different drug or edit the existing one.');
+        return;
+      }
+      setMedications(medications.map(med =>
+        med.id === id ? { ...med, [field]: value } : med
       ));
     } else {
       setMedications(medications.map(med =>
@@ -316,11 +342,11 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
         medications={savedMedications}
         onSetAsDefault={handleSetAsDefault}
       />
-      <form onSubmit={handleSubmit} className="flex flex-col gap-[19px] items-end justify-center w-[352px]">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-[19px] items-end justify-center w-[352px] max-w-full">
       <div className="content-stretch flex flex-col gap-[92px] items-start relative shrink-0 w-full">
         <div className="box-border content-stretch flex flex-col items-start pb-[4px] pt-0 px-0 relative shrink-0 w-full">
           <div className="box-border content-stretch flex flex-col gap-[27px] items-start mb-[-4px] relative shrink-0 w-full">
-            <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0 w-[377px]">
+            <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0 w-full max-w-[377px]">
               {/* Current Medications Header */}
               <div className="content-stretch flex flex-col font-['Helvetica_Neue:Medium',sans-serif] gap-[8px] items-start not-italic relative shrink-0 w-full whitespace-pre-wrap">
                 <p className="leading-[normal] relative shrink-0 text-[17px] text-black tracking-[-0.17px] w-full">
@@ -332,13 +358,13 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
               </div>
 
               {/* Medications List */}
-              <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-[377px]">
+              <div className="content-stretch flex flex-col gap-[6px] items-start relative shrink-0 w-full max-w-[377px]">
                 <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[15px] text-black tracking-[0.15px] w-[min-content] whitespace-pre-wrap">
                   Tabs
                 </p>
                 <div className="content-stretch flex flex-col gap-[33px] items-start relative shrink-0 w-full">
                   {medications.map((medication, index) => (
-                    <div key={medication.id} className="relative content-stretch flex gap-[8px] items-center shrink-0 w-[377px]">
+                    <div key={medication.id} className="relative content-stretch flex gap-[8px] items-center shrink-0 w-full max-w-[377px]">
                     <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full">
                       {/* Drug Name Dropdown */}
                       <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0 w-[145px]">
@@ -453,7 +479,7 @@ export default function MedicationsEntry({ selectedDate, onSave, onCancel, allRe
             </div>
 
             {/* Add Medication Button */}
-            <div className="box-border content-stretch flex gap-[8px] items-center relative shrink-0">
+            <div className="box-border content-stretch flex gap-[8px] items-center relative shrink-0 w-full max-w-[377px]">
               <button
                 type="button"
                 onClick={handleAddMedication}

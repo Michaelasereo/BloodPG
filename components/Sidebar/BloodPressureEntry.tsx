@@ -9,6 +9,7 @@ interface BloodPressureEntryProps {
   allRecords: BloodPressureRecord[];
   onSave: (data: BloodPressureFormData) => Promise<boolean>;
   onCancel: () => void;
+  onFormDataChange?: (data: BloodPressureFormData, isEditing: boolean) => void;
 }
 
 export default function BloodPressureEntry({
@@ -16,6 +17,7 @@ export default function BloodPressureEntry({
   allRecords,
   onSave,
   onCancel,
+  onFormDataChange,
 }: BloodPressureEntryProps) {
   const [formData, setFormData] = useState<BloodPressureFormData>({
     am: {
@@ -193,6 +195,13 @@ export default function BloodPressureEntry({
     setIsSaved(true);
     onCancel();
   };
+
+  // Notify parent of form data changes for auto-save
+  useEffect(() => {
+    if (onFormDataChange) {
+      onFormDataChange(formData, isEditing);
+    }
+  }, [formData, isEditing, onFormDataChange]);
 
   // Listen for record updates to refresh form if current date's record was updated
   useEffect(() => {

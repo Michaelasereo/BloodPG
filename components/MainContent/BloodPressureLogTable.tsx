@@ -55,16 +55,21 @@ export default function BloodPressureLogTable({
                   S/N
                 </p>
           </div>
-          {sortedRecords.map((record, index) => (
-            <div
-              key={`sn-${record.id}`}
-              className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full"
-            >
-              <p className="flex-[1_0_0] font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] min-h-px min-w-px not-italic relative shrink-0 text-[12px] text-black whitespace-pre-wrap">
-                {index + 1}
-              </p>
-            </div>
-          ))}
+          {sortedRecords.map((record, index) => {
+            const minHeight = record.medications.length > 2 ? 'auto' : '64px';
+            const cellHeight = record.medications.length > 2 ? `${Math.max(64, 64 + (record.medications.length - 2) * 25)}px` : '64px';
+            return (
+              <div
+                key={`sn-${record.id}`}
+                className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full"
+                style={{ minHeight: cellHeight, height: cellHeight }}
+              >
+                <p className="flex-[1_0_0] font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] min-h-px min-w-px not-italic relative shrink-0 text-[12px] text-black whitespace-pre-wrap">
+                  {index + 1}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Date Column */}
@@ -106,16 +111,20 @@ export default function BloodPressureLogTable({
               </div>
             </button>
           </div>
-          {sortedRecords.map((record) => (
-            <div
-              key={`date-${record.id}`}
-              className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full"
-            >
-              <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[14.183px] text-black tracking-[0.1418px] w-[105px] whitespace-pre-wrap">
-                {formatDateOrdinal(record.date)}
-            </p>
-            </div>
-          ))}
+          {sortedRecords.map((record) => {
+            const cellHeight = record.medications.length > 2 ? `${Math.max(64, 64 + (record.medications.length - 2) * 25)}px` : '64px';
+            return (
+              <div
+                key={`date-${record.id}`}
+                className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex items-center justify-center px-[24px] py-[12px] relative shrink-0 w-full"
+                style={{ minHeight: cellHeight, height: cellHeight }}
+              >
+                <p className="font-['Helvetica_Neue:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[14.183px] text-black tracking-[0.1418px] w-[105px] whitespace-pre-wrap">
+                  {formatDateOrdinal(record.date)}
+                </p>
+              </div>
+            );
+          })}
           </div>
 
         {/* BP (AM) Column */}
@@ -130,27 +139,31 @@ export default function BloodPressureLogTable({
                       </p>
                     </div>
           </div>
-          {sortedRecords.map((record) => (
-            <div
-              key={`am-${record.id}`}
-              className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center gap-[8px] px-[24px] py-[12px] relative shrink-0 w-[117px]"
-            >
-              <p className="font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[17.729px] text-black tracking-[0.1773px] whitespace-nowrap">
-                        {record.am.systolic}/{record.am.diastolic}
-                      </p>
-              {record.am.postMedication && (
-                <div className="relative shrink-0 size-[12px]">
-                  <Image
-                    src="/mdi_drugs.svg"
-                    alt="Medication"
-                    width={12}
-                    height={12}
-                    className="object-contain"
-                  />
-                </div>
-              )}
-            </div>
-          ))}
+          {sortedRecords.map((record) => {
+            const cellHeight = record.medications.length > 2 ? `${Math.max(64, 64 + (record.medications.length - 2) * 25)}px` : '64px';
+            return (
+              <div
+                key={`am-${record.id}`}
+                className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex items-center justify-center gap-[8px] px-[24px] py-[12px] relative shrink-0 w-[117px]"
+                style={{ minHeight: cellHeight, height: cellHeight }}
+              >
+                <p className="font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[17.729px] text-black tracking-[0.1773px] whitespace-nowrap">
+                  {record.am.systolic}/{record.am.diastolic}
+                </p>
+                {record.am.postMedication && (
+                  <div className="relative shrink-0 size-[12px]">
+                    <Image
+                      src="/mdi_drugs.svg"
+                      alt="Medication"
+                      width={12}
+                      height={12}
+                      className="object-contain"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* BP (PM) Column */}
@@ -165,27 +178,31 @@ export default function BloodPressureLogTable({
               </p>
             </div>
           </div>
-          {sortedRecords.map((record) => (
-            <div
-              key={`pm-${record.id}`}
-              className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex h-[64px] items-center justify-center gap-[8px] px-[24px] py-[12px] relative shrink-0 w-full"
-            >
-              <p className="font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[17.729px] text-black tracking-[0.1773px] whitespace-nowrap">
-                        {record.pm.systolic}/{record.pm.diastolic}
-                      </p>
-              {record.pm.postMedication && (
-                <div className="relative shrink-0 size-[12px]">
-                  <Image
-                    src="/mdi_drugs.svg"
-                    alt="Medication"
-                    width={12}
-                    height={12}
-                    className="object-contain"
-                  />
-                </div>
-              )}
-                    </div>
-                    ))}
+          {sortedRecords.map((record) => {
+            const cellHeight = record.medications.length > 2 ? `${Math.max(64, 64 + (record.medications.length - 2) * 25)}px` : '64px';
+            return (
+              <div
+                key={`pm-${record.id}`}
+                className="bg-white border-[#dadada] border-b border-l-0 border-r border-solid border-t-0 box-border content-stretch flex items-center justify-center gap-[8px] px-[24px] py-[12px] relative shrink-0 w-full"
+                style={{ minHeight: cellHeight, height: cellHeight }}
+              >
+                <p className="font-['Helvetica_Neue:Medium',sans-serif] leading-[normal] not-italic relative shrink-0 text-[17.729px] text-black tracking-[0.1773px] whitespace-nowrap">
+                  {record.pm.systolic}/{record.pm.diastolic}
+                </p>
+                {record.pm.postMedication && (
+                  <div className="relative shrink-0 size-[12px]">
+                    <Image
+                      src="/mdi_drugs.svg"
+                      alt="Medication"
+                      width={12}
+                      height={12}
+                      className="object-contain"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
                   </div>
 
         {/* Current Medications Column */}
@@ -195,12 +212,14 @@ export default function BloodPressureLogTable({
               Current Medications
             </p>
                 </div>
-          {sortedRecords.map((record) => (
-            <div
-              key={`meds-${record.id}`}
-              className="bg-white border-[#dadada] border-b border-l-0 border-r-0 border-solid border-t-0 box-border content-stretch flex min-h-[64px] items-center px-[24px] py-[12px] relative shrink-0 w-full"
-              style={{ height: record.medications.length > 2 ? 'auto' : '64px' }}
-            >
+          {sortedRecords.map((record) => {
+            const cellHeight = record.medications.length > 2 ? `${Math.max(64, 64 + (record.medications.length - 2) * 25)}px` : '64px';
+            return (
+              <div
+                key={`meds-${record.id}`}
+                className="bg-white border-[#dadada] border-b border-l-0 border-r-0 border-solid border-t-0 box-border content-stretch flex items-center px-[24px] py-[12px] relative shrink-0 w-full"
+                style={{ minHeight: cellHeight, height: cellHeight }}
+              >
               <div className="content-stretch flex flex-col font-['Helvetica_Neue:Italic',sans-serif] gap-[7.091px] items-start leading-[normal] not-italic relative shrink-0 text-[13.296px] text-black tracking-[-0.6648px] w-full max-w-[250px] whitespace-pre-wrap">
                 {record.medications.map((med, medIndex) => {
                   // Format medication: ensure "Tabs" prefix and "mg" in dosage
@@ -217,7 +236,7 @@ export default function BloodPressureLogTable({
                           className="object-contain"
                         />
                       </div>
-                      <p className="relative shrink-0">
+                      <p className="relative shrink-0 break-words">
                         -{formattedMed}
                       </p>
                     </div>
@@ -230,7 +249,8 @@ export default function BloodPressureLogTable({
                 )}
               </div>
               </div>
-            ))}
+            );
+          })}
         </div>
       </div>
     </div>

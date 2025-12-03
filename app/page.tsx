@@ -9,17 +9,31 @@ import MainContent from '@/components/MainContent/MainContent';
 import AuthGuard from '@/components/AuthGuard/AuthGuard';
 import { getAllBloodPressureRecords } from '@/lib/dataService';
 import { getAllMedicationsForRecords } from '@/lib/supabaseService';
+import { useAuth } from '@/lib/authContext';
 // import '@/lib/initData'; // Dummy data initialization disabled for testing
 import '@/lib/clearAllData'; // Make clear functions available in console
 import type { MainTab, BloodPressureRecord } from '@/types';
 import type { Medication } from '@/types';
 
 export default function Home() {
+  const { user } = useAuth();
   const [activeMainTab, setActiveMainTab] = useState<MainTab>('blood-pressure');
   const [allRecords, setAllRecords] = useState<BloodPressureRecord[]>([]);
   const [recordsLoaded, setRecordsLoaded] = useState(false);
   const [medicationsMap, setMedicationsMap] = useState<Map<number, Medication[]>>(new Map());
   const [medicationsLoaded, setMedicationsLoaded] = useState(false);
+
+  // Clear all data when user signs out
+  useEffect(() => {
+    if (!user) {
+      // User signed out - clear all data
+      setAllRecords([]);
+      setMedicationsMap(new Map());
+      setRecordsLoaded(false);
+      setMedicationsLoaded(false);
+      console.log('🧹 Cleared all data on sign out');
+    }
+  }, [user]);
 
   // Pre-load records when app starts (background loading)
   useEffect(() => {
